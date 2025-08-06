@@ -1,11 +1,17 @@
 package giuliomarra.bookhaven.entities;
 
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.security.AuthenticatedEntity;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "user_app")
-public class User {
+public class User implements AuthenticatedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -16,6 +22,7 @@ public class User {
     private String phoneNumber;
     private String address;
     private String taxCode;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -31,7 +38,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, String email, String phoneNumber, String address, String taxCode, Role role, Card card, Staff registeredBy) {
+    public User(String name, String surname, String email, String phoneNumber, String address, String taxCode, Role role, Card card, Staff registeredBy, String password) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -41,6 +48,7 @@ public class User {
         this.role = role;
         this.card = card;
         this.registeredBy = registeredBy;
+        this.password = password;
     }
 
     public Long getId() {
@@ -121,5 +129,44 @@ public class User {
 
     public void setRegisteredBy(Staff registeredBy) {
         this.registeredBy = registeredBy;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return AuthenticatedEntity.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
