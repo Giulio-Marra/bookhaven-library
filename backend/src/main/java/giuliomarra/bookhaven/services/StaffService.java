@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.entities.Staff;
+import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.repositories.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class StaffService {
         if (optionalStaff.isPresent()) {
             return optionalStaff.get();
         } else {
-            throw new RuntimeException("Staff with this id " + id + " not found");
+            throw new EntityNotFoundException("Staff with this id " + id + " not found");
         }
     }
 }

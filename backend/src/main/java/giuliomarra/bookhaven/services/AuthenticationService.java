@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.RoleNotSupportedException;
 import giuliomarra.bookhaven.security.AuthenticatedEntity;
 import giuliomarra.bookhaven.security.JwtTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class AuthenticationService {
         } else if (role == Role.USER) {
             return userService.findUserById(id);
         } else {
-            throw new RuntimeException("Role not supported");
+            throw new RoleNotSupportedException("Role not supported");
         }
     }
 

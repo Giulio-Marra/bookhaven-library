@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.entities.User;
+import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
-            throw new RuntimeException("User with this id " + id + " not found");
+            throw new EntityNotFoundException("User with this id " + id + " not found");
         }
     }
 }

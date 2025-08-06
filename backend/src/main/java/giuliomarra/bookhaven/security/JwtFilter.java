@@ -1,10 +1,10 @@
 package giuliomarra.bookhaven.security;
 
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.AuthenticationException;
 import giuliomarra.bookhaven.services.AuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new UnavailableException("Please insert token");
+            throw new AuthenticationException("Please insert token");
 
         String accessToken = authHeader.substring(7);
 

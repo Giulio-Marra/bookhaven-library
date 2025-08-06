@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.security;
 
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.AuthenticationException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class JwtTool {
             Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token);
 
         } catch (Exception ex) {
-            throw new RuntimeException("Problem with token, try to relog");
+            throw new AuthenticationException("Problem with token, try to relog");
         }
     }
 
