@@ -4,6 +4,7 @@ import giuliomarra.bookhaven.entities.Card;
 import giuliomarra.bookhaven.entities.Staff;
 import giuliomarra.bookhaven.entities.User;
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.AlreadyexistsException;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.NewUserAccountRequiredDto;
 import giuliomarra.bookhaven.payloads.RegisterUserInfoDto;
@@ -56,7 +57,7 @@ public class UserService {
 
     public RegisterUserInfoDto createNewUserAccount(NewUserAccountRequiredDto body, Staff registeredBy) {
         if (userRepository.existsByTaxCode(body.taxCode())) {
-            throw new RuntimeException("User with this taxCode already exist");
+            throw new AlreadyexistsException("User with this taxCode " + body.taxCode() + " already exist");
         }
         Card card = cardService.addNewCard(body.card());
 

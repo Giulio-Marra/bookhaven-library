@@ -40,8 +40,26 @@ public class JwtTool {
     }
 
     public Role extractRoleFromToken(String token) {
-        String role = (String) Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build()
-                .parseSignedClaims(token).getPayload().get("role");
-        return Role.valueOf(role);
+        try {
+            var claims = Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            Object roleObj = claims.get("role");
+
+            if (roleObj == null) {
+                throw new AuthenticationException("Token does not contain a 'role' claim.");
+            }
+
+            String roleStr = roleObj.toString().toUpperCase(); // safe
+
+            return Role.valueOf(roleStr);
+
+        } catch (Exception ex) {
+            throw new AuthenticationException("Invalid or missing role in token: " + ex.getMessage());
+        }
     }
+
 }

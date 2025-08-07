@@ -2,6 +2,7 @@ package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.entities.Staff;
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.AlreadyexistsException;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.NewMemberStaffAccountRequiredDto;
 import giuliomarra.bookhaven.repositories.StaffRepository;
@@ -37,7 +38,7 @@ public class StaffService {
 
     public Staff createNewMemberStaff(NewMemberStaffAccountRequiredDto body) {
         if (staffRepository.existsByIdentityCode(body.identityCode())) {
-            throw new RuntimeException("Staff with this identity code alreeady exists");
+            throw new AlreadyexistsException("Staff with this identity code " + body.identityCode() + " alreeady exists");
         }
         Staff staff = new Staff(
                 body.name(),
