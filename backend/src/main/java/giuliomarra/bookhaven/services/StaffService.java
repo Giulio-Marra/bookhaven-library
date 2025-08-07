@@ -22,4 +22,11 @@ public class StaffService {
             throw new EntityNotFoundException("Staff with this id " + id + " not found");
         }
     }
+
+    public Staff findStaffByIdentityCode(String identityCode) {
+        return staffRepository.findByIdentityCode(identityCode)
+                .orElseThrow(() -> new EntityNotFoundException("Staff with identity code " + identityCode + " not found"));
+    }
+
+   
 }

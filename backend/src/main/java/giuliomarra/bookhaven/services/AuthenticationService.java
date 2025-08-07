@@ -1,7 +1,10 @@
 package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.enums.Role;
+import giuliomarra.bookhaven.exceptions.AuthenticationException;
+import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.exceptions.RoleNotSupportedException;
+import giuliomarra.bookhaven.payloads.LoginRequiredDto;
 import giuliomarra.bookhaven.security.AuthenticatedEntity;
 import giuliomarra.bookhaven.security.JwtTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,25 @@ public class AuthenticationService {
             return userService.findUserById(id);
         } else {
             throw new RoleNotSupportedException("Role not supported");
+        }
+    }
+
+    public AuthenticatedEntity findEntityByCode(String code) {
+        try {
+            return staffService.findStaffByIdentityCode(code);
+        } catch (EntityNotFoundException e) {
+            return userService.findUserByCardCode(code);
+        }
+    }
+
+
+    public String generateToken(LoginRequiredDto lr) {
+        AuthenticatedEntity entity = findEntityByCode(lr.code());
+
+        if (bcrypt.matches(lr.password(), entity.getPassword())) {
+            return jwtTools.createToken(entity);
+        } else {
+            throw new AuthenticationException("Wrong credentials");
         }
     }
 

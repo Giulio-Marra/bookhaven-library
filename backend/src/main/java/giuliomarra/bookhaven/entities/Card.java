@@ -3,7 +3,6 @@ package giuliomarra.bookhaven.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cads")
@@ -12,14 +11,14 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long cardNumber;
+    private String cardNumber;
     private LocalDate creationDate;
-    private LocalDateTime expirationDate;
+    private LocalDate expirationDate;
 
     public Card() {
     }
 
-    public Card(Long cardNumber, LocalDate creationDate, LocalDateTime expirationDate) {
+    public Card(String cardNumber, LocalDate creationDate, LocalDate expirationDate) {
         this.cardNumber = cardNumber;
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
@@ -33,11 +32,11 @@ public class Card {
         this.id = id;
     }
 
-    public Long getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(Long cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -49,11 +48,11 @@ public class Card {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 }
