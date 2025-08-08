@@ -14,10 +14,10 @@ public class Book {
     private String isbn;
 
     private String title;
-    private String authors;
     private String categories;
     private String image;
     private String position;
+
 
     @Column(length = 2000)
     private String description;
@@ -27,14 +27,14 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     private BookStatus status;
+    
 
     public Book() {
     }
 
-    public Book(String isbn, String title, String authors, String categories, String image, String position, String description, Integer publishedYear, Integer numPages, BookStatus status) {
+    public Book(String isbn, String title, String categories, String image, String position, String description, Integer publishedYear, Integer numPages, BookStatus status) {
         this.isbn = isbn;
         this.title = title;
-        this.authors = authors;
         this.categories = categories;
         this.image = image;
         this.position = position;
@@ -66,14 +66,6 @@ public class Book {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(String authors) {
-        this.authors = authors;
     }
 
     public String getCategories() {
