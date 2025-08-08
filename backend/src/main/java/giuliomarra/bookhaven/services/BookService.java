@@ -5,12 +5,15 @@ import giuliomarra.bookhaven.entities.Book;
 import giuliomarra.bookhaven.entities.BookAuthor;
 import giuliomarra.bookhaven.enums.BookStatus;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
+import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
-import giuliomarra.bookhaven.payloads.RemoveBookResponseDto;
+import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
 import giuliomarra.bookhaven.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BookService {
@@ -80,19 +83,26 @@ public class BookService {
     }
 
 
-    public RemoveBookResponseDto removeBook(Long id) {
+    public RemoveEntityResponseDto removeBook(Long id) {
         Book book = findById(id);
 
         bookAuthorsRepository.deleteByBook(book);
-        
+
         bookRepository.delete(book);
 
-        return new RemoveBookResponseDto(
+        return new RemoveEntityResponseDto(
                 "Book with ID " + book.getId() +
                         " and ISBN " + book.getIsbn() +
                         " has been removed from the database."
         );
     }
 
+    public List<Book> findBooksByAuthorId(Long authorId) {
+        return bookRepository.findBooksByAuthorId(authorId);
+    }
+
+    public List<BookSummaryDto> searchBooks(String searchTerm) {
+        return bookRepository.searchBooksByTitleOrAuthor(searchTerm);
+    }
 
 }
