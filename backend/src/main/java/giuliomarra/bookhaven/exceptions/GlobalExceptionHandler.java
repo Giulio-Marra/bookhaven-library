@@ -52,4 +52,26 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
     }
+
+    @ExceptionHandler(CardExpiredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerCardExpire(CardExpiredException ce, HttpServletRequest request) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ce.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(BookNotAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerNotAvailable(BookNotAvailableException bna, HttpServletRequest request) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                bna.getMessage(),
+                request.getRequestURI()
+        );
+    }
 }
