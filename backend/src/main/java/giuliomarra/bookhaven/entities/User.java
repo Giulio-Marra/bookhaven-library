@@ -1,5 +1,6 @@
 package giuliomarra.bookhaven.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import giuliomarra.bookhaven.enums.Role;
 import giuliomarra.bookhaven.security.AuthenticatedEntity;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "user_app")
+@JsonIgnoreProperties({"password", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked", "accepted"})
 public class User implements AuthenticatedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

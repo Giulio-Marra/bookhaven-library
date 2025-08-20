@@ -8,9 +8,14 @@ import giuliomarra.bookhaven.enums.BookStatus;
 import giuliomarra.bookhaven.enums.ReservationStatus;
 import giuliomarra.bookhaven.exceptions.BookNotAvailableException;
 import giuliomarra.bookhaven.exceptions.CardExpiredException;
+import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.BookReservationResponseDto;
+import giuliomarra.bookhaven.payloads.PendingReservationDto;
 import giuliomarra.bookhaven.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +31,12 @@ public class ReservationService {
     @Autowired
     private UserService userService;
 
-    public BookReservationResponseDto ReservationBook(Long idBook, User user) {
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+    }
+
+    public BookReservationResponseDto reservationBook(Long idBook, User user) {
         Book book = bookService.findById(idBook);
 
         if (book.getStatus() != BookStatus.AVAILABLE) {
@@ -46,6 +56,8 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
 
+        bookService.updateBookStatus(idBook, BookStatus.BOOKED);
+
         return new BookReservationResponseDto(
                 reservation.getId(),
                 book.getTitle(),
@@ -56,4 +68,36 @@ public class ReservationService {
         );
 
     }
+
+    public Page<PendingReservationDto> getReservations(ReservationStatus status, String cardNumber, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return reservationRepository.findReservationsByFilters(status, cardNumber, pageable);
+    }
+
+    public void updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
+        Reservation reservation = findById(reservationId);
+
+        reservation.setStatus(newStatus);
+        reservation.setReservationDate(LocalDate.now());
+
+        switch (newStatus) {
+            case ACTIVE:
+                reservation.setDueDate(LocalDate.now().plusDays(30));
+                reservationRepository.save(reservation);
+                break;
+            case RETURNED:
+                bookService.updateBookStatus(reservation.getBook().getId(), BookStatus.AVAILABLE);
+                reservationRepository.save(reservation);
+                break;
+            case DECLINED:
+                bookService.updateBookStatus(reservation.getBook().getId(), BookStatus.AVAILABLE);
+                reservationRepository.delete(reservation);
+                break;
+            default:
+                reservationRepository.save(reservation);
+                break;
+        }
+    }
+
+
 }

@@ -2,6 +2,7 @@ package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.entities.Card;
 import giuliomarra.bookhaven.exceptions.AlreadyexistsException;
+import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.NewCardRequiredDto;
 import giuliomarra.bookhaven.repositories.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,17 @@ public class CardService {
                 body.expirationDate()
         );
 
+        return cardRepository.save(card);
+    }
+
+    public Card findCardById(Long idCard) {
+        return cardRepository.findById(idCard)
+                .orElseThrow(() -> new EntityNotFoundException("Card with id " + idCard + " not found"));
+    }
+    
+    public Card updateCardExpiration(Long idCard) {
+        Card card = findCardById(idCard);
+        card.setExpirationDate(card.getExpirationDate().plusYears(1));
         return cardRepository.save(card);
     }
 }

@@ -105,4 +105,11 @@ public class BookService {
         return bookRepository.searchBooksByTitleOrAuthor(searchTerm);
     }
 
+    public Book updateBookStatus(Long id, BookStatus status) {
+        Book book = findById(id);
+        book.setStatus(status);
+        return bookRepository.save(book);
+    }
+
+
 }
