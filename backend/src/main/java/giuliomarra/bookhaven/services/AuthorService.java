@@ -7,22 +7,33 @@ import giuliomarra.bookhaven.payloads.NewAuthorRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.AuthorRepository;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthorService {
-    @Autowired
-    private AuthorRepository authorRepository;
 
-    @Autowired
-    private BookAuthorsRepository bookAuthorsRepository;
+    private final AuthorRepository authorRepository;
+    private final BookAuthorsRepository bookAuthorsRepository;
 
-    public Author findAuthorById(Long authorId) {
-        return authorRepository.findById(authorId).orElseThrow(() -> new EntityNotFoundException("Author with this id " + authorId + " not found"));
+    public AuthorService(AuthorRepository authorRepository, BookAuthorsRepository bookAuthorsRepository) {
+        this.authorRepository = authorRepository;
+        this.bookAuthorsRepository = bookAuthorsRepository;
     }
 
-    ;
+    public Author findAuthorById(Long authorId) {
+        return authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with this id " + authorId + " not found"));
+    }
+
+    public List<Author> findAllAuthors() {
+        return authorRepository.findAll();
+    }
+
+    public List<Author> searchAuthorsByName(String name) {
+        return authorRepository.findByNameContainingIgnoreCase(name);
+    }
 
     public Author addNewAuthor(NewAuthorRequiredDto body) {
         if (authorRepository.existsByName(body.name())) {
@@ -41,12 +52,10 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    ;
-
     public Author updateAuthor(Long id, NewAuthorRequiredDto body) {
         Author author = findAuthorById(id);
 
-        if (authorRepository.existsByName(body.name())) {
+        if (authorRepository.existsByName(body.name()) && !author.getName().equals(body.name())) {
             throw new AlreadyexistsException("Author " + body.name() + " already exists");
         }
 
@@ -60,19 +69,14 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    ;
-
     public RemoveEntityResponseDto removeAuthor(Long id) {
         Author author = findAuthorById(id);
 
         bookAuthorsRepository.deleteByAuthor(author);
-
         authorRepository.delete(author);
 
         return new RemoveEntityResponseDto(
                 "Author with ID " + author.getId() + " and name " + author.getName() + " has been removed."
         );
     }
-
-
 }

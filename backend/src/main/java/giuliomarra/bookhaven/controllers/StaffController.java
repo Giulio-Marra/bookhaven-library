@@ -1,27 +1,34 @@
 package giuliomarra.bookhaven.controllers;
 
 import giuliomarra.bookhaven.entities.Staff;
-import giuliomarra.bookhaven.payloads.NewMemberStaffAccountRequiredDto;
-import giuliomarra.bookhaven.payloads.NewUserAccountRequiredDto;
-import giuliomarra.bookhaven.payloads.RegisterUserInfoDto;
+import giuliomarra.bookhaven.entities.User;
+import giuliomarra.bookhaven.payloads.*;
 import giuliomarra.bookhaven.services.StaffService;
 import giuliomarra.bookhaven.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
-    @Autowired
-    private StaffService staffService;
 
-    @Autowired
-    private UserService userService;
+    private final StaffService staffService;
+    private final UserService userService;
+
+    public StaffController(StaffService staffService, UserService userService) {
+        this.staffService = staffService;
+        this.userService = userService;
+    }
+
+    // ---------------------------
+    // STAFF MANAGEMENT
+    // ---------------------------
 
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
@@ -32,13 +39,94 @@ public class StaffController {
     }
 
     @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping
+    public ResponseEntity<List<Staff>> getAllStaff() {
+        return ResponseEntity.ok(staffService.findAllStaff());
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Staff> getStaffById(@PathVariable Long id) {
+        return ResponseEntity.ok(staffService.findStaffById(id));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/{id}")
+    public ResponseEntity<Staff> updateStaff(@PathVariable Long id,
+                                             @RequestBody @Valid UpdateStaffInfoDto dto) {
+        return ResponseEntity.ok(staffService.updateStaffInfo(id, dto));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/{id}/password/change")
+    public ResponseEntity<String> changeStaffPassword(@PathVariable Long id,
+                                                      @RequestBody String newPassword) {
+        staffService.changeStaffPassword(id, newPassword);
+        return ResponseEntity.ok("Password aggiornata con successo per lo staff con id " + id);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStaff(@PathVariable Long id) {
+        staffService.deleteStaff(id);
+    }
+
+    // ---------------------------
+    // USER MANAGEMENT
+    // ---------------------------
+
+    @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/user/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RegisterUserInfoDto> registerSUser(@RequestBody @Valid NewUserAccountRequiredDto body,
-                                                             @AuthenticationPrincipal Staff staffLogged) {
+    public ResponseEntity<RegisterUserInfoDto> registerUser(@RequestBody @Valid NewUserAccountRequiredDto body,
+                                                            @AuthenticationPrincipal Staff staffLogged) {
         RegisterUserInfoDto userInfo = userService.createNewUserAccount(body, staffLogged);
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfo);
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
 
+    @PreAuthorize("hasAuthority('STAFF')")
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/user/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserInfoDto dto) {
+        User user = userService.findUserById(id);
+        return ResponseEntity.ok(userService.updateUserInfo(user, dto));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/user/{id}/password/reset")
+    public ResponseEntity<String> resetUserPassword(@PathVariable Long id) {
+        String newPassword = userService.resetUserPassword(id);
+        return ResponseEntity.ok(newPassword);
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/user/{id}/card/assign")
+    public ResponseEntity<User> assignNewCard(@PathVariable Long id, @RequestBody @Valid NewCardRequiredDto dto) {
+        return ResponseEntity.ok(userService.assignNewCardToUser(id, dto));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/user/{id}/card/renew")
+    public ResponseEntity<User> renewCard(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.renewUserCard(id));
+    }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @DeleteMapping("/user/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
 }

@@ -10,29 +10,42 @@ import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
 import giuliomarra.bookhaven.repositories.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BookService {
-    @Autowired
-    private BookRepository bookRepository;
 
-    @Autowired
-    private BookAuthorsRepository bookAuthorsRepository;
+    private final BookRepository bookRepository;
+    private final BookAuthorsRepository bookAuthorsRepository;
+    private final AuthorService authorService;
 
-    @Autowired
-    private AuthorService authorService;
+    public BookService(BookRepository bookRepository, BookAuthorsRepository bookAuthorsRepository, AuthorService authorService) {
+        this.bookRepository = bookRepository;
+        this.bookAuthorsRepository = bookAuthorsRepository;
+        this.authorService = authorService;
+    }
 
     public Book findById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book with this id " + id + " not found"));
     }
 
-    public Book addNewBook(NewBookRequiredDto body) {
+    public List<Book> findAllBooks() {
+        return bookRepository.findAll();
+    }
 
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new EntityNotFoundException("Book with ISBN " + isbn + " not found"));
+    }
+
+    public List<Book> findByCategory(String category) {
+        return bookRepository.findByCategoriesContainingIgnoreCase(category);
+    }
+
+    public Book addNewBook(NewBookRequiredDto body) {
         Book book = new Book(
                 body.isbn(),
                 body.title(),
@@ -82,12 +95,10 @@ public class BookService {
         return book;
     }
 
-
     public RemoveEntityResponseDto removeBook(Long id) {
         Book book = findById(id);
 
         bookAuthorsRepository.deleteByBook(book);
-
         bookRepository.delete(book);
 
         return new RemoveEntityResponseDto(
@@ -110,6 +121,4 @@ public class BookService {
         book.setStatus(status);
         return bookRepository.save(book);
     }
-
-
 }

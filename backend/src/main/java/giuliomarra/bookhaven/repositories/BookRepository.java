@@ -8,10 +8,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByIsbn(String isbn);
+
+    Optional<Book> findByIsbn(String isbn);
+
+    List<Book> findByCategoriesContainingIgnoreCase(String category);
 
     @Query("SELECT ba.book FROM BookAuthor ba WHERE ba.author.id = :authorId")
     List<Book> findBooksByAuthorId(@Param("authorId") Long authorId);
