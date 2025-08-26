@@ -10,6 +10,8 @@ import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
 import giuliomarra.bookhaven.repositories.BookRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -112,8 +114,8 @@ public class BookService {
         return bookRepository.findBooksByAuthorId(authorId);
     }
 
-    public List<BookSummaryDto> searchBooks(String searchTerm) {
-        return bookRepository.searchBooksByTitleOrAuthor(searchTerm);
+    public Page<BookSummaryDto> searchBooks(String searchTerm, Pageable pageable) {
+        return bookRepository.searchBooksByTitleOrAuthor(searchTerm, pageable);
     }
 
     public Book updateBookStatus(Long id, BookStatus status) {
@@ -121,4 +123,9 @@ public class BookService {
         book.setStatus(status);
         return bookRepository.save(book);
     }
+
+    public Page<Book> findBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
+
 }

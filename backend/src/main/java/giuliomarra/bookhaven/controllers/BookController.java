@@ -6,12 +6,13 @@ import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -47,15 +48,28 @@ public class BookController {
         return ResponseEntity.ok(bookService.removeBook(id));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<BookSummaryDto>> searchBooks(@RequestParam String q) {
-        return ResponseEntity.ok(bookService.searchBooks(q));
+    @GetMapping("/public/search")
+    public ResponseEntity<Page<BookSummaryDto>> searchBooks(
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(bookService.searchBooks(q, pageable));
     }
+
 
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/{id}/status")
     public ResponseEntity<Book> updateBookStatus(@PathVariable Long id, @RequestParam BookStatus status) {
         return ResponseEntity.ok(bookService.updateBookStatus(id, status));
     }
+
+    @GetMapping("/public/all")
+    public Page<Book> getBooks(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookService.findBooks(pageable);
+    }
+
 }
 

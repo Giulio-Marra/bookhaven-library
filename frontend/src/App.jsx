@@ -3,41 +3,48 @@ import "./App.css";
 import { useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
 import MyNavbar from "./components/MyNavbar";
-
-function LoginPage() {
-  return <h1>Login Page</h1>;
-}
-
-function Dashboard() {
-  return <h1>Dashboard - Utente loggato</h1>;
-}
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomepAge";
+import AuthLayout from "./layouts/AuthLayout";
+import MainLayout from "./layouts/MainLayout";
+import CatalogPage from "./pages/CatalogPage";
 
 function App() {
-  const { getCurrentUser, user, isLoading, isAuthenticated } = useAuth();
+  const { getCurrentUser, isLoading } = useAuth();
 
   useEffect(() => {
     getCurrentUser();
-  }, [user]);
+  }, []);
 
   if (isLoading) return <p>Caricamento...</p>;
 
   return (
     <BrowserRouter>
-      <MyNavbar />
       <Routes>
-        {/* Rotta pubblica */}
-        <Route path="/login" element={<LoginPage />} />
-
-        {/* Rotta protetta */}
         <Route
-          path="/dashboard"
+          path="/login"
           element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />
+            <AuthLayout>
+              <LoginPage />
+            </AuthLayout>
           }
         />
-
-        {/* Default → se non c’è nessuna route */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route
+          path="/homepage"
+          element={
+            <MainLayout>
+              <HomePage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/catalog"
+          element={
+            <MainLayout>
+              <CatalogPage />
+            </MainLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

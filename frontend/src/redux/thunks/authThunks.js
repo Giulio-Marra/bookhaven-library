@@ -17,8 +17,9 @@ export const loginUser = (code, password, rememberMe) => async (dispatch) => {
     dispatch(setError(null));
 
     const token = await login(code, password, rememberMe);
-    const user = await getCurrentUser();
+    if (!token) throw new Error("Login fallito: nessun token ricevuto");
 
+    const user = await getCurrentUser(token); // passiamo direttamente il token
     dispatch(setUser(user));
   } catch (err) {
     dispatch(setError(err.message));
@@ -30,7 +31,9 @@ export const loginUser = (code, password, rememberMe) => async (dispatch) => {
 export const fetchCurrentUser = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const user = await getCurrentUser();
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const user = await getCurrentUser(token);
     if (user) dispatch(setUser(user));
   } catch (err) {
     dispatch(removeUser());
