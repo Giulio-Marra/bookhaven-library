@@ -1,8 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const CardBook = ({ book }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/book/detail/${book.bookId}`);
+  };
+
   return (
-    <div className="flex flex-col m-5  rounded-lg">
+    <div className="flex flex-col m-5  rounded-lg" onClick={handleClick}>
       <img
         src={book.image}
         alt={book.title}

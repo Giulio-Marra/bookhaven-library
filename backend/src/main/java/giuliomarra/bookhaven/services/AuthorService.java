@@ -79,4 +79,9 @@ public class AuthorService {
                 "Author with ID " + author.getId() + " and name " + author.getName() + " has been removed."
         );
     }
+
+
+    public List<Author> getAuthorsByBookId(Long bookId) {
+        return authorRepository.findAuthorsByBookId(bookId);
+    }
 }

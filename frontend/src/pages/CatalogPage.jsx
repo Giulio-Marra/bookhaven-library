@@ -1,48 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { getBooks } from "../services/bookService";
 import CardBook from "../components/CardBook";
+import { useSearchParams } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 const CatalogPage = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
+  const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(""); // input dell'utente
+  const [searchQuery, setSearchQuery] = useState(""); // ricerca effettiva
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Carica i libri quando cambia la pagina
+  // Legge il parametro search dall'URL all'inizio
   useEffect(() => {
+    const searchFromUrl = searchParams.get("search") || "";
+    setSearch(searchFromUrl);
+    setSearchQuery(searchFromUrl); // fa partire la prima fetch
+  }, [searchParams]);
+
+  // Carica i libri quando cambia pagina o ricerca effettiva
+  useEffect(() => {
+    const loadBooks = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getBooks(searchQuery, page, size);
+        setBooks(data.content);
+        setTotalPages(data.totalPages);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadBooks();
-  }, [page]);
+  }, [page, searchQuery]);
 
-  const loadBooks = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getBooks(search, page, size);
-      setBooks(data.content);
-      setTotalPages(data.totalPages);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Gestisce la ricerca
+  // Gestione input
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
-  // Gestisce l'invio della ricerca (Enter)
+  // Submit con Enter
   const handleSearchSubmit = (e) => {
     if (e.key === "Enter") {
       setPage(0);
-      loadBooks();
+      setSearchQuery(search); // aggiorna ricerca effettiva
+      setSearchParams({ search }); // aggiorna URL
     }
   };
 
+  // Paginazione
   const renderPageNumbers = () => {
     const pages = [];
     const maxPagesToShow = 5;
@@ -94,11 +107,14 @@ const CatalogPage = () => {
         />
       </div>
 
-      {loading && <p className="text-center">Loading...</p>}
+      {loading && <Spinner />}
       {error && (
         <p className="text-red-500 text-center">
           Error loading books: {error.message}
         </p>
+      )}
+      {books.length === 0 && (
+        <p className="text-black-500 text-center">No books found.</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -107,7 +123,6 @@ const CatalogPage = () => {
         ))}
       </div>
 
-      {/* Paginazione - mostra solo se ci sono libri */}
       {books.length > 0 && (
         <div className="flex justify-center items-center mt-6">
           <button

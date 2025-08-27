@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import Logo from "../assets/Logo.png";
 
 const MyNavbar = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <nav className="bg-white text-black px-6 py-3 flex justify-between items-center border-b-1 border-b-gray-200 font-serif shadow-md fixed top-0 left-0 right-0 z-50">
@@ -34,9 +34,14 @@ const MyNavbar = () => {
           </Link>
         )}
         {isAuthenticated && (
-          <Link to="/dashboard" className="hover:text-gray-300">
-            Dashboard
-          </Link>
+          <>
+            <Link to="/dashboard" className="hover:text-gray-300">
+              Dashboard
+            </Link>
+            <button onClick={logout} className="hover:text-gray-300">
+              Logout
+            </button>
+          </>
         )}
 
         {isAuthenticated && user?.role === "STAFF" && (

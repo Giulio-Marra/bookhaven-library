@@ -2,6 +2,7 @@ package giuliomarra.bookhaven.controllers;
 
 import giuliomarra.bookhaven.entities.Book;
 import giuliomarra.bookhaven.enums.BookStatus;
+import giuliomarra.bookhaven.payloads.BookDetailDto;
 import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
@@ -71,5 +72,10 @@ public class BookController {
         return bookService.findBooks(pageable);
     }
 
+    @GetMapping("public/{id}")
+    public ResponseEntity<BookDetailDto> getBookDetail(@PathVariable Long id) {
+        BookDetailDto bookDetail = bookService.getBookDetail(id);
+        return ResponseEntity.ok(bookDetail);
+    }
 }
 

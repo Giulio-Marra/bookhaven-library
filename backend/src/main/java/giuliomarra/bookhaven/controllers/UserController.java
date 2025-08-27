@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.controllers;
 
 import giuliomarra.bookhaven.entities.User;
+import giuliomarra.bookhaven.security.AuthenticatedEntity;
 import giuliomarra.bookhaven.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +19,9 @@ public class UserController {
     }
 
     // L'utente può vedere i propri dati
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/me")
-    public ResponseEntity<User> getMyProfile(@AuthenticationPrincipal User userLogged) {
-        return ResponseEntity.ok(userLogged);
+    public ResponseEntity<AuthenticatedEntity> getMyProfile(@AuthenticationPrincipal AuthenticatedEntity entity) {
+        return ResponseEntity.ok(entity);
     }
 
     // L'utente può cambiare la propria password

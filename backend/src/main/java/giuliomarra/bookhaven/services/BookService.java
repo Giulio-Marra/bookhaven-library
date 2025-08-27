@@ -5,6 +5,7 @@ import giuliomarra.bookhaven.entities.Book;
 import giuliomarra.bookhaven.entities.BookAuthor;
 import giuliomarra.bookhaven.enums.BookStatus;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
+import giuliomarra.bookhaven.payloads.BookDetailDto;
 import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
@@ -127,5 +128,27 @@ public class BookService {
     public Page<Book> findBooks(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
+
+    public BookDetailDto getBookDetail(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        List<Author> authors = authorService.getAuthorsByBookId(bookId);
+
+        return new BookDetailDto(
+                book.getId(),
+                book.getTitle(),
+                book.getImage(),
+                book.getIsbn(),
+                book.getNumPages(),
+                book.getPosition(),
+                book.getPublishedYear(),
+                book.getStatus(),
+                book.getDescription(),
+                book.getCategories(),
+                authors
+        );
+    }
+
 
 }

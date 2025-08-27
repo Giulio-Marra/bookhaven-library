@@ -8,6 +8,7 @@ import HomePage from "./pages/HomepAge";
 import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import CatalogPage from "./pages/CatalogPage";
+import BookDetailPage from "./pages/BookDetailPage";
 
 function App() {
   const { getCurrentUser, isLoading } = useAuth();
@@ -42,6 +43,14 @@ function App() {
           element={
             <MainLayout>
               <CatalogPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/book/detail/:id"
+          element={
+            <MainLayout>
+              <BookDetailPage />
             </MainLayout>
           }
         />

@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import HomepageImage from "../assets/aaa.jpg";
 import CardBook from "../components/CardBook";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // Navigate to catalog page with search query parameter
+      navigate(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
+    } else {
+      // Navigate to catalog page without search parameter
+      navigate("/catalog");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch(e);
+    }
+  };
+
   const books = [
     {
       image: "https://picsum.photos/200/300?random=1",
@@ -41,16 +62,22 @@ const HomePage = () => {
           <p className="text-lg md:text-xl text-white mb-6">
             Explore a curated list of books tailored just for you.
           </p>
-          <div className="flex w-full max-w-xl">
+          <form onSubmit={handleSearch} className="flex w-full max-w-xl">
             <input
               type="text"
               placeholder="Search for books..."
               className="w-full p-3 rounded-l-lg border-none focus:outline-none bg-white"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
-            <button className="p-3 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700">
+            <button
+              type="submit"
+              className="p-3 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700"
+            >
               Search
             </button>
-          </div>
+          </form>
         </div>
       </div>
 

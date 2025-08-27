@@ -21,3 +21,22 @@ export const getBooks = async (searchItem, page, size) => {
     throw error;
   }
 };
+
+export const getBookById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/books/public/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch book");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

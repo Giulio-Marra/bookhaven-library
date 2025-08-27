@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/auth")
 public class TestController {
     @Autowired
     private StaffService staffService;

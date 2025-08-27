@@ -36,4 +36,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                    OR LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
             """)
     Page<BookSummaryDto> searchBooksByTitleOrAuthor(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+
 }
