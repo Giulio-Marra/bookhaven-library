@@ -6,7 +6,6 @@ import giuliomarra.bookhaven.entities.BookAuthor;
 import giuliomarra.bookhaven.enums.BookStatus;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.BookDetailDto;
-import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
@@ -14,7 +13,9 @@ import giuliomarra.bookhaven.repositories.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,11 +24,13 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookAuthorsRepository bookAuthorsRepository;
     private final AuthorService authorService;
+    private final SupabaseStorageService supabaseStorageService;
 
-    public BookService(BookRepository bookRepository, BookAuthorsRepository bookAuthorsRepository, AuthorService authorService) {
+    public BookService(BookRepository bookRepository, BookAuthorsRepository bookAuthorsRepository, AuthorService authorService, SupabaseStorageService supabaseStorageService) {
         this.bookRepository = bookRepository;
         this.bookAuthorsRepository = bookAuthorsRepository;
         this.authorService = authorService;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     public Book findById(Long id) {
@@ -48,12 +51,17 @@ public class BookService {
         return bookRepository.findByCategoriesContainingIgnoreCase(category);
     }
 
-    public Book addNewBook(NewBookRequiredDto body) {
+    public Book addNewBook(NewBookRequiredDto body, MultipartFile imageFile) throws IOException, InterruptedException {
+        String imageUrl = null;
+        if (imageFile != null) {
+            imageUrl = supabaseStorageService.uploadFile(imageFile);
+        }
+
         Book book = new Book(
                 body.isbn(),
                 body.title(),
                 body.categories(),
-                body.image(),
+                imageUrl,
                 body.position(),
                 body.description(),
                 body.publishedYear(),
@@ -115,9 +123,27 @@ public class BookService {
         return bookRepository.findBooksByAuthorId(authorId);
     }
 
-    public Page<BookSummaryDto> searchBooks(String searchTerm, Pageable pageable) {
-        return bookRepository.searchBooksByTitleOrAuthor(searchTerm, pageable);
+    public Page<BookDetailDto> searchBooks(String searchTerm, Pageable pageable) {
+        Page<Book> books = bookRepository.searchBooksByTitleOrAuthor(searchTerm, pageable);
+
+        return books.map(book -> {
+            List<Author> authors = authorService.getAuthorsByBookId(book.getId());
+            return new BookDetailDto(
+                    book.getId(),
+                    book.getTitle(),
+                    book.getImage(),
+                    book.getIsbn(),
+                    book.getNumPages(),
+                    book.getPosition(),
+                    book.getPublishedYear(),
+                    book.getStatus(),
+                    book.getDescription(),
+                    book.getCategories(),
+                    authors
+            );
+        });
     }
+
 
     public Book updateBookStatus(Long id, BookStatus status) {
         Book book = findById(id);

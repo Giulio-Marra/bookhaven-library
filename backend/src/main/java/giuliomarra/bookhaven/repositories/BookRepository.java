@@ -1,7 +1,6 @@
 package giuliomarra.bookhaven.repositories;
 
 import giuliomarra.bookhaven.entities.Book;
-import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,10 +23,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findBooksByAuthorId(@Param("authorId") Long authorId);
 
     @Query("""
-            SELECT DISTINCT new giuliomarra.bookhaven.payloads.BookSummaryDto(
-                b.id, b.title, b.image, b.publishedYear,
-                a.id, a.name
-            )
+            SELECT DISTINCT b
             FROM Book b
             JOIN BookAuthor ba ON ba.book = b
             JOIN ba.author a
@@ -35,7 +31,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                    OR LOWER(b.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) 
                    OR LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
             """)
-    Page<BookSummaryDto> searchBooksByTitleOrAuthor(@Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<Book> searchBooksByTitleOrAuthor(@Param("searchTerm") String searchTerm, Pageable pageable);
 
 
 }

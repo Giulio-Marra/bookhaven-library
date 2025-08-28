@@ -3,7 +3,6 @@ package giuliomarra.bookhaven.controllers;
 import giuliomarra.bookhaven.entities.Book;
 import giuliomarra.bookhaven.enums.BookStatus;
 import giuliomarra.bookhaven.payloads.BookDetailDto;
-import giuliomarra.bookhaven.payloads.BookSummaryDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.services.BookService;
@@ -14,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/books")
@@ -27,10 +29,14 @@ public class BookController {
 
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
-    public ResponseEntity<Book> addBook(@RequestBody NewBookRequiredDto body) {
-        Book book = bookService.addNewBook(body);
+    public ResponseEntity<Book> addBook(
+            @RequestPart("data") NewBookRequiredDto body,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException, InterruptedException {
+        Book book = bookService.addNewBook(body, imageFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBook(@PathVariable Long id) {
@@ -50,7 +56,7 @@ public class BookController {
     }
 
     @GetMapping("/public/search")
-    public ResponseEntity<Page<BookSummaryDto>> searchBooks(
+    public ResponseEntity<Page<BookDetailDto>> searchBooks(
             @RequestParam(required = false) String q,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {

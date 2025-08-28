@@ -9,9 +9,13 @@ import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import CatalogPage from "./pages/CatalogPage";
 import BookDetailPage from "./pages/BookDetailPage";
+import AddNewBookTest from "./pages/AddNewBookTest";
+import AdminPage from "./pages/admin/AdminPage";
+import AdminRoute from "./pages/admin/AdminRoute";
+import AddBooksPage from "./pages/admin/AddBooksPage";
 
 function App() {
-  const { getCurrentUser, isLoading } = useAuth();
+  const { getCurrentUser, isLoading, role } = useAuth();
 
   useEffect(() => {
     getCurrentUser();
@@ -52,6 +56,34 @@ function App() {
             <MainLayout>
               <BookDetailPage />
             </MainLayout>
+          }
+        />
+        <Route
+          path="/book/add"
+          element={
+            <MainLayout>
+              <AddNewBookTest />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <AdminPage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/add-book"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <AddBooksPage />
+              </MainLayout>
+            </AdminRoute>
           }
         />
       </Routes>

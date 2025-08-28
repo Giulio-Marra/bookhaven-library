@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 const CardBook = ({ book }) => {
   const navigate = useNavigate();
+  console.log(book);
+
   const handleClick = () => {
-    navigate(`/book/detail/${book.bookId}`);
+    navigate(`/book/detail/${book.id}`);
   };
 
   return (
@@ -16,7 +18,9 @@ const CardBook = ({ book }) => {
       />
       <div className="px-4 pb-4">
         <h3 className="text-lg font-semibold">{book.title}</h3>
-        <p className="text-blue-400">{book.authorName}</p>
+        <p className="text-blue-400">
+          {book.authors.map((author) => author.name)}
+        </p>
       </div>
     </div>
   );

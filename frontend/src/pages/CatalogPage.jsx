@@ -107,21 +107,21 @@ const CatalogPage = () => {
         />
       </div>
 
-      {loading && <Spinner />}
-      {error && (
+      {loading ? (
+        <Spinner />
+      ) : error ? (
         <p className="text-red-500 text-center">
           Error loading books: {error.message}
         </p>
-      )}
-      {books.length === 0 && (
+      ) : books.length === 0 ? (
         <p className="text-black-500 text-center">No books found.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {books.map((book) => (
+            <CardBook key={book.id} book={book} />
+          ))}
+        </div>
       )}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {books.map((book) => (
-          <CardBook key={book.id} book={book} />
-        ))}
-      </div>
 
       {books.length > 0 && (
         <div className="flex justify-center items-center mt-6">
