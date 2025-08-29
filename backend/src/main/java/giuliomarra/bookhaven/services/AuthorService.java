@@ -3,6 +3,7 @@ package giuliomarra.bookhaven.services;
 import giuliomarra.bookhaven.entities.Author;
 import giuliomarra.bookhaven.exceptions.AlreadyexistsException;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
+import giuliomarra.bookhaven.payloads.ListAuthorNameAndIdDto;
 import giuliomarra.bookhaven.payloads.NewAuthorRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.AuthorRepository;
@@ -84,4 +85,9 @@ public class AuthorService {
     public List<Author> getAuthorsByBookId(Long bookId) {
         return authorRepository.findAuthorsByBookId(bookId);
     }
+
+    public List<ListAuthorNameAndIdDto> getAllAuthorsNamesAndIds() {
+        return authorRepository.findAllNamesAndIds();
+    }
+
 }

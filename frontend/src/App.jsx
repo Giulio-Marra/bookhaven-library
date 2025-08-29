@@ -13,6 +13,8 @@ import AddNewBookTest from "./pages/AddNewBookTest";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminRoute from "./pages/admin/AdminRoute";
 import AddBooksPage from "./pages/admin/AddBooksPage";
+import Spinner from "./components/Spinner";
+import AuthorDetailpage from "./pages/AuthorDetailpage";
 
 function App() {
   const { getCurrentUser, isLoading, role } = useAuth();
@@ -21,7 +23,7 @@ function App() {
     getCurrentUser();
   }, []);
 
-  if (isLoading) return <p>Caricamento...</p>;
+  if (isLoading) return <Spinner />;
 
   return (
     <BrowserRouter>
@@ -55,6 +57,14 @@ function App() {
           element={
             <MainLayout>
               <BookDetailPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/author/detail/:id"
+          element={
+            <MainLayout>
+              <AuthorDetailpage />
             </MainLayout>
           }
         />

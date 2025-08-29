@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -82,6 +83,12 @@ public class BookController {
     public ResponseEntity<BookDetailDto> getBookDetail(@PathVariable Long id) {
         BookDetailDto bookDetail = bookService.getBookDetail(id);
         return ResponseEntity.ok(bookDetail);
+    }
+
+    @GetMapping("public/author/{authorId}")
+    public ResponseEntity<List<Book>> getAllBooksAuthor(@PathVariable Long authorId) {
+        List<Book> books = bookService.findBooksByAuthorId(authorId);
+        return ResponseEntity.ok(books);
     }
 }
 

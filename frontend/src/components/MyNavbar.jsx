@@ -25,6 +25,14 @@ const MyNavbar = () => {
       </div>
 
       <div className="flex items-center space-x-4">
+        {isAuthenticated && user?.role === "STAFF" && (
+          <Link
+            to="/admin"
+            className="hover:bg-gray-300 bg-blue-400 p-2 px-4 rounded-md"
+          >
+            Admin Panel
+          </Link>
+        )}
         {!isAuthenticated && (
           <Link
             to="/login"
@@ -42,12 +50,6 @@ const MyNavbar = () => {
               Logout
             </button>
           </>
-        )}
-
-        {isAuthenticated && user?.role === "STAFF" && (
-          <Link to="/admin" className="hover:text-gray-300">
-            Admin Panel
-          </Link>
         )}
       </div>
     </nav>

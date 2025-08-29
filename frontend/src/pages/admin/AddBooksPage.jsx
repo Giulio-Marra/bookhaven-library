@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 import { addNewBook } from "../../services/bookService";
+import AuthorsSelect from "../../components/componentsStaff/AuthorsSelect";
 
 const InputField = ({ label, name, value, onChange, placeholder }) => (
   <div className="flex flex-col gap-1 py-2">
@@ -9,7 +9,7 @@ const InputField = ({ label, name, value, onChange, placeholder }) => (
       <input
         name={name}
         placeholder={placeholder}
-        className="w-full rounded-md border border-[#d0dbe7] bg-slate-50 h-10 px-3 text-sm"
+        className="w-full rounded-md border border-[#d0dbe7] bg-slate-50 h-10 px-3 text-sm text-blue-600"
         value={value}
         onChange={onChange}
       />
@@ -19,6 +19,7 @@ const InputField = ({ label, name, value, onChange, placeholder }) => (
 
 const AddBooksPage = () => {
   const token = localStorage.getItem("authToken");
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     isbn: "",
@@ -45,7 +46,11 @@ const AddBooksPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addNewBook(formData, token, imageFile);
+      await addNewBook(
+        { ...formData, authorIds: selectedAuthors },
+        token,
+        imageFile
+      );
       alert("Libro aggiunto con successo!");
     } catch (err) {
       console.error(err);
@@ -103,12 +108,10 @@ const AddBooksPage = () => {
           onChange={handleChange}
           placeholder="350"
         />
-        <InputField
-          label="Author IDs"
-          name="authorIds"
-          value={formData.authorIds}
-          onChange={handleChange}
-          placeholder="1,2,3"
+        <AuthorsSelect
+          selectedAuthors={selectedAuthors}
+          setSelectedAuthors={setSelectedAuthors}
+          token={token}
         />
 
         <div className="flex flex-col gap-1">

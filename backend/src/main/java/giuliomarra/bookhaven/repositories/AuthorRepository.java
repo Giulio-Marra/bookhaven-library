@@ -1,6 +1,7 @@
 package giuliomarra.bookhaven.repositories;
 
 import giuliomarra.bookhaven.entities.Author;
+import giuliomarra.bookhaven.payloads.ListAuthorNameAndIdDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +18,9 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     @Query("SELECT ba.author FROM BookAuthor ba WHERE ba.book.id = :bookId")
     List<Author> findAuthorsByBookId(@Param("bookId") Long bookId);
+
+    @Query("SELECT new giuliomarra.bookhaven.payloads.ListAuthorNameAndIdDto(a.id, a.name) FROM Author a")
+    List<ListAuthorNameAndIdDto> findAllNamesAndIds();
+
 
 }

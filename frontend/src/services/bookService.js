@@ -66,7 +66,7 @@ export const addNewBook = async (bookData, token, imageFile) => {
           description,
           publishedYear: parseInt(publishedYear),
           numPages: parseInt(numPages),
-          authorIds: authorIds.split(",").map((id) => parseInt(id)),
+          authorIds: authorIds.map((id) => parseInt(id)),
         }),
       ],
       { type: "application/json" }
@@ -94,6 +94,28 @@ export const addNewBook = async (bookData, token, imageFile) => {
     }
 
     return await response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getBookByAuthorId = async (id) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/books/public/author/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch book");
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error(error);
     throw error;

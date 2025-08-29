@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getBookById } from "../services/bookService";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
 const BookDetailPage = () => {
@@ -8,6 +8,7 @@ const BookDetailPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { id: bookId } = useParams();
+  const navigate = useNavigate();
   console.log(book);
 
   useEffect(() => {
@@ -42,9 +43,17 @@ const BookDetailPage = () => {
           <div className="flex justify-between mt-10">
             <div>
               <p className="text-xl font-bold">{book.title}</p>
-              <p className=" text-blue-400">
-                By: {book.authors.map((author) => author.name).join(", ")}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {book.authors.map((author) => (
+                  <p
+                    key={author.id}
+                    className="text-blue-400 cursor-pointer hover:underline"
+                    onClick={() => navigate(`/author/detail/${author.id}`)}
+                  >
+                    {author.name}
+                  </p>
+                ))}
+              </div>
             </div>
             <div>
               <img

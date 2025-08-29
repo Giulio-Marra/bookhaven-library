@@ -57,11 +57,12 @@ const BooksStaffCatalog = () => {
         onKeyDown={sandSearch}
         onChange={handleSearchChange}
       />
-      <div className="grid grid-cols-5 gap-4 border border-gray-300 p-4 font-bold">
+      <div className="grid grid-cols-6 gap-4 border border-gray-300 p-4 font-bold">
         <p>Title</p>
         <p>Author</p>
         <p>ISBN</p>
         <p>Availability</p>
+        <p>Position</p>
         <p>Actions</p>
       </div>
       {loading ? (
@@ -74,7 +75,7 @@ const BooksStaffCatalog = () => {
         books.map((book) => (
           <div
             key={book.id}
-            className="grid grid-cols-5 gap-4 border border-gray-300 p-4 items-center"
+            className="grid grid-cols-6 gap-4 border border-gray-300 p-4 items-center"
           >
             <p>{book.title}</p>
             <p className="text-blue-400">
@@ -82,6 +83,7 @@ const BooksStaffCatalog = () => {
             </p>
             <p>{book.isbn}</p>
             <p className="">{book.status}</p>
+            <p className="">{book.position}</p>
             <div className="flex gap-2 text-blue-400">
               <p>Edit</p>
               <p>|</p>
