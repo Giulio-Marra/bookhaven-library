@@ -5,6 +5,9 @@ import giuliomarra.bookhaven.payloads.ListAuthorNameAndIdDto;
 import giuliomarra.bookhaven.payloads.NewAuthorRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.services.AuthorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,21 +46,16 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.findAllAuthors());
     }
 
-    // VISIBILE A TUTTI
-    @GetMapping("/search")
-    public ResponseEntity<List<Author>> searchAuthors(@RequestParam String name) {
-        return ResponseEntity.ok(authorService.searchAuthorsByName(name));
-    }
-
     // SOLO STAFF
-    @PutMapping("/public/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody NewAuthorRequiredDto body) {
         return ResponseEntity.ok(authorService.updateAuthor(id, body));
     }
 
     // SOLO STAFF
     @PreAuthorize("hasAuthority('STAFF')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<RemoveEntityResponseDto> deleteAuthor(@PathVariable Long id) {
         return ResponseEntity.ok(authorService.removeAuthor(id));
     }
@@ -67,5 +65,16 @@ public class AuthorController {
     public ResponseEntity<List<ListAuthorNameAndIdDto>> getAllAuthorsNamesAndIds() {
         return ResponseEntity.ok(authorService.getAllAuthorsNamesAndIds());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<Author>> searchAuthors(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(authorService.searchAuthorsByName(name, pageable));
+    }
+
 }
 

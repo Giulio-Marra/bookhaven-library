@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { getAllAuthorsName } from "../../services/authorService";
 
-const AuthorsSelect = ({ selectedAuthors, setSelectedAuthors, token }) => {
+const AuthorsSelectModal = ({
+  selectedAuthors,
+  setSelectedAuthors,
+  onClose,
+  token,
+}) => {
   const [authors, setAuthors] = useState([]);
   const [filter, setFilter] = useState("");
 
@@ -9,68 +14,62 @@ const AuthorsSelect = ({ selectedAuthors, setSelectedAuthors, token }) => {
     getAllAuthorsName(token).then(setAuthors).catch(console.error);
   }, [token]);
 
-  const filteredAuthors = authors
-    .filter((a) => !selectedAuthors.includes(a.id))
-    .filter((a) => a.name.toLowerCase().includes(filter.toLowerCase()));
-
-  const handleSelect = (author) => {
-    setSelectedAuthors([...selectedAuthors, author.id]);
+  const toggleSelect = (author) => {
+    if (selectedAuthors.find((a) => a.id === author.id)) {
+      setSelectedAuthors(selectedAuthors.filter((a) => a.id !== author.id));
+    } else {
+      setSelectedAuthors([...selectedAuthors, author]);
+    }
   };
 
-  const handleRemove = (id) => {
-    setSelectedAuthors(selectedAuthors.filter((sid) => sid !== id));
-  };
-
-  const selectedAuthorsObjects = authors.filter((a) =>
-    selectedAuthors.includes(a.id)
+  const filteredAuthors = authors.filter((a) =>
+    a.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
-    <div className="flex flex-col gap-2 py-2 w-full">
-      <p className="text-sm font-medium pb-1">Authors</p>
-
-      {/* Tag autori selezionati */}
-      <div className="flex flex-wrap gap-2 mb-1">
-        {selectedAuthorsObjects.map((author) => (
-          <div
-            key={author.id}
-            className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm"
-          >
-            <span>{author.name}</span>
-            <button
-              type="button"
-              onClick={() => handleRemove(author.id)}
-              className="text-blue-600 font-bold"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-lg shadow-lg w-96 max-w-full p-6">
+        <h2 className="text-xl font-bold mb-4">Seleziona autori</h2>
+        <input
+          type="text"
+          placeholder="Cerca autori..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="w-full mb-3 rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <div className="max-h-64 overflow-y-auto mb-4">
+          {filteredAuthors.map((author) => (
+            <label
+              key={author.id}
+              className="flex items-center gap-2 p-1 cursor-pointer hover:bg-gray-100 rounded"
             >
-              ×
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Input di ricerca */}
-      <input
-        type="text"
-        placeholder="Search authors..."
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        className="mb-1 w-full rounded-md border border-[#d0dbe7] px-3 py-1 text-sm"
-      />
-
-      {/* Lista autori filtrati */}
-      <div className="max-h-10 overflow-y-auto border rounded-md p-1">
-        {filteredAuthors.map((author) => (
-          <div
-            key={author.id}
-            className="flex items-center gap-2 cursor-pointer hover:bg-slate-100 p-1 rounded"
-            onClick={() => handleSelect(author)}
+              <input
+                type="checkbox"
+                checked={!!selectedAuthors.find((a) => a.id === author.id)}
+                onChange={() => toggleSelect(author)}
+                className="w-4 h-4 text-blue-600"
+              />
+              <span>{author.name}</span>
+            </label>
+          ))}
+        </div>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
           >
-            <span>{author.name}</span>
-          </div>
-        ))}
+            Cancella
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Aggiungi
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AuthorsSelect;
+export default AuthorsSelectModal;

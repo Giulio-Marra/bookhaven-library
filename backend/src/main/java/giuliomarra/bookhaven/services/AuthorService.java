@@ -8,6 +8,9 @@ import giuliomarra.bookhaven.payloads.NewAuthorRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.AuthorRepository;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,10 +33,6 @@ public class AuthorService {
 
     public List<Author> findAllAuthors() {
         return authorRepository.findAll();
-    }
-
-    public List<Author> searchAuthorsByName(String name) {
-        return authorRepository.findByNameContainingIgnoreCase(name);
     }
 
     public Author addNewAuthor(NewAuthorRequiredDto body) {
@@ -70,6 +69,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    @Transactional
     public RemoveEntityResponseDto removeAuthor(Long id) {
         Author author = findAuthorById(id);
 
@@ -88,6 +88,14 @@ public class AuthorService {
 
     public List<ListAuthorNameAndIdDto> getAllAuthorsNamesAndIds() {
         return authorRepository.findAllNamesAndIds();
+    }
+
+
+    public Page<Author> searchAuthorsByName(String name, Pageable pageable) {
+        if (name == null || name.trim().isEmpty()) {
+            return authorRepository.findAll(pageable);
+        }
+        return authorRepository.findByNameContainingIgnoreCase(name, pageable);
     }
 
 }

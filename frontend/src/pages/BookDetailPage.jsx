@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { getBookById } from "../services/bookService";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import { useAuth } from "../hooks/useAuth";
 
 const BookDetailPage = () => {
   const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id: bookId } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  console.log(book);
 
   useEffect(() => {
     const loadBook = async () => {
@@ -19,74 +20,128 @@ const BookDetailPage = () => {
         const data = await getBookById(bookId);
         setBook(data);
       } catch (err) {
-        setError(err);
+        setError(err.message || "Error loading book");
       } finally {
         setLoading(false);
       }
     };
 
     loadBook();
-  }, []);
+  }, [bookId]);
+
+  if (loading) return <Spinner />;
+  if (error) return <p className="text-red-600 text-center mt-20">{error}</p>;
+  if (!book)
+    return <p className="text-gray-600 text-center mt-20">Book not found</p>;
+
+  const statusColors = {
+    AVAILABLE: "bg-green-50 text-green-700 border border-green-200",
+    BORROWED: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+    UNAVAILABLE: "bg-red-50 text-red-700 border border-red-200",
+  };
 
   return (
-    <div>
-      {loading ? (
-        <Spinner />
-      ) : error ? (
-        "Error loading book"
-      ) : book ? (
-        <div className="max-w-4xl mx-auto flex-col p-6 mt-30 gap-10">
+    <div className="max-w-4xl mx-auto p-6 mt-16">
+      {/* Titolo e descrizione */}
+      <h1 className="mb-6 text-gray-400">
+        Books / <span className="text-black font-bold">{book.title}</span>
+      </h1>
+      <div className="flex flex-col sm:flex-row gap-8 items-start mb-12">
+        <img
+          src={book.image}
+          alt={book.title}
+          className="w-52 h-80 object-cover rounded-lg shadow-sm border border-gray-100"
+        />
+        <div className="flex-1 space-y-2">
+          {/* Titolo */}
+          <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
+          {/* Autori */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-500">Authors</p>
+            <div className="flex flex-wrap gap-2">
+              {book.authors?.map((author) => (
+                <button
+                  key={author.id}
+                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                  onClick={() => navigate(`/author/detail/${author.id}`)}
+                >
+                  {author.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Descrizione */}
+          <p className="text-gray-600 text-lg leading-relaxed">
+            {book.description}
+          </p>
+
+          {/* Status */}
           <div className="">
-            <h1 className="text-4xl font-bold mb-2">{book.title}</h1>
-            <p className="text-gray-800">{book.description}</p>
-          </div>
-          <div className="flex justify-between mt-10">
-            <div>
-              <p className="text-xl font-bold">{book.title}</p>
-              <div className="flex flex-wrap gap-2">
-                {book.authors.map((author) => (
-                  <p
-                    key={author.id}
-                    className="text-blue-400 cursor-pointer hover:underline"
-                    onClick={() => navigate(`/author/detail/${author.id}`)}
-                  >
-                    {author.name}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div>
-              <img
-                className="w-48 h-72 object-cover"
-                src={book.image}
-                alt={book.title}
-              />
-            </div>
-          </div>
-          <div className="mt-10 flex-col">
-            <h2 className="text-2xl font-bold border-b border-gray-200 pb-5">
-              Book Details
-            </h2>
-            <p className="flex pb-5 pt-5 border-b border-gray-200 text-blue-400">
-              Published:{" "}
-              <span className="ml-10 text-gray-600">{book.publishedYear}</span>
-            </p>
-            <p className="flex pb-5 pt-5 border-b border-gray-200 text-blue-400">
-              Pages:{" "}
-              <span className="ml-10 text-gray-600">{book.numPages}</span>
-            </p>
-            <p className="flex pb-5 pt-5 border-b border-gray-200 text-blue-400">
-              Categories:{" "}
-              <span className="ml-10 text-gray-600">{book.categories}</span>
-            </p>
-            <p className="flex pb-5 pt-5 border-b border-gray-200 text-blue-400">
-              Isbn: <span className="ml-10 text-gray-600">{book.isbn}</span>
-            </p>
+            <span
+              className={`inline-block px-4 py-2 text-sm font-medium rounded-md ${
+                statusColors[book.status] ||
+                "bg-gray-50 text-gray-700 border border-gray-200"
+              }`}
+            >
+              {book.status}
+            </span>
+            {user ? (
+              <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Reserve Book
+              </button>
+            ) : (
+              <>
+                <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-400 border border-transparent rounded-md shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  Reserve Book
+                </button>
+                <p className="text-gray-600 ">
+                  Please log in to reserve this book.
+                </p>
+              </>
+            )}
           </div>
         </div>
-      ) : (
-        "Book not found"
-      )}
+      </div>
+
+      {/* Dettagli libro */}
+      <div className="bg-white border border-gray-200 rounded-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">
+          Book Details
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
+          <div>
+            <span className="block text-sm font-medium text-gray-500 mb-1">
+              Published
+            </span>
+            <span className="text-lg font-semibold text-gray-900">
+              {book.publishedYear}
+            </span>
+          </div>
+          <div>
+            <span className="block text-sm font-medium text-gray-500 mb-1">
+              Pages
+            </span>
+            <span className="text-lg font-semibold text-gray-900">
+              {book.numPages}
+            </span>
+          </div>
+          <div>
+            <span className="block text-sm font-medium text-gray-500 mb-1">
+              Categories
+            </span>
+            <span className="text-lg font-semibold text-gray-900">
+              {book.categories}
+            </span>
+          </div>
+          <div>
+            <span className="block text-sm font-medium text-gray-500 mb-1">
+              ISBN
+            </span>
+            <span className="text-lg font-mono text-gray-900">{book.isbn}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

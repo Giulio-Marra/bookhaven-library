@@ -25,13 +25,21 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("""
             SELECT DISTINCT b
             FROM Book b
-            JOIN BookAuthor ba ON ba.book = b
-            JOIN ba.author a
+            LEFT JOIN BookAuthor ba ON ba.book = b
+            LEFT JOIN ba.author a
             WHERE (:searchTerm IS NULL OR :searchTerm = '' 
                    OR LOWER(b.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) 
+                   OR LOWER(b.isbn) LIKE LOWER(CONCAT('%', :searchTerm, '%')) 
                    OR LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')))
+              AND (:category IS NULL OR :category = '' OR LOWER(b.categories) LIKE LOWER(CONCAT('%', :category, '%')))
             """)
-    Page<Book> searchBooksByTitleOrAuthor(@Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<Book> searchBooksByTitleAuthorOrCategory(
+            @Param("searchTerm") String searchTerm,
+            @Param("category") String category,
+            Pageable pageable);
+
+
+    List<Book> findTop6ByOrderByAddingDateDesc();
 
 
 }

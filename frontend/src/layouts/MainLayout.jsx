@@ -1,11 +1,16 @@
 import React from "react";
 import MyNavbar from "../components/MyNavbar";
+import Footer from "../components/Footer";
 
 const MainLayout = ({ children }) => {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <MyNavbar />
-      <main>{children}</main>
+
+      {/* il contenuto cresce e spinge giù il footer */}
+      <main className="flex-grow">{children}</main>
+
+      <Footer />
     </div>
   );
 };

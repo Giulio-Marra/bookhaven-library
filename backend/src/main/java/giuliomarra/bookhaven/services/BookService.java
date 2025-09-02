@@ -10,6 +10,7 @@ import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.repositories.BookAuthorsRepository;
 import giuliomarra.bookhaven.repositories.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -80,18 +81,25 @@ public class BookService {
         return book;
     }
 
-    public Book updateBook(Long id, NewBookRequiredDto body) {
+    public Book updateBook(Long id, NewBookRequiredDto body, MultipartFile imageFile) throws IOException, InterruptedException {
         Book book = findById(id);
 
         book.setIsbn(body.isbn());
         book.setTitle(body.title());
         book.setCategories(body.categories());
-        book.setImage(body.image());
         book.setPosition(body.position());
         book.setDescription(body.description());
         book.setPublishedYear(body.publishedYear());
         book.setNumPages(body.numPages());
         book.setStatus(BookStatus.AVAILABLE);
+
+
+        if (imageFile != null) {
+            String imageUrl = supabaseStorageService.uploadFile(imageFile);
+            book.setImage(imageUrl);
+        } else if (body.image() != null) {
+            book.setImage(body.image());
+        }
 
         book = bookRepository.save(book);
 
@@ -106,6 +114,7 @@ public class BookService {
         return book;
     }
 
+    @Transactional
     public RemoveEntityResponseDto removeBook(Long id) {
         Book book = findById(id);
 
@@ -123,8 +132,9 @@ public class BookService {
         return bookRepository.findBooksByAuthorId(authorId);
     }
 
-    public Page<BookDetailDto> searchBooks(String searchTerm, Pageable pageable) {
-        Page<Book> books = bookRepository.searchBooksByTitleOrAuthor(searchTerm, pageable);
+    public Page<BookDetailDto> searchBooks(String searchTerm, String category, Pageable pageable) {
+        
+        Page<Book> books = bookRepository.searchBooksByTitleAuthorOrCategory(searchTerm, category, pageable);
 
         return books.map(book -> {
             List<Author> authors = authorService.getAuthorsByBookId(book.getId());
@@ -174,6 +184,27 @@ public class BookService {
                 book.getCategories(),
                 authors
         );
+    }
+
+    public List<BookDetailDto> getRecentBooks() {
+        List<Book> recentBooks = bookRepository.findTop6ByOrderByAddingDateDesc();
+
+        return recentBooks.stream().map(book -> {
+            List<Author> authors = authorService.getAuthorsByBookId(book.getId());
+            return new BookDetailDto(
+                    book.getId(),
+                    book.getTitle(),
+                    book.getImage(),
+                    book.getIsbn(),
+                    book.getNumPages(),
+                    book.getPosition(),
+                    book.getPublishedYear(),
+                    book.getStatus(),
+                    book.getDescription(),
+                    book.getCategories(),
+                    authors
+            );
+        }).toList();
     }
 
 

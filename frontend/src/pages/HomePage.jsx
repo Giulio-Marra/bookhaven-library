@@ -1,19 +1,26 @@
-import React, { useState } from "react";
-import HomepageImage from "../assets/aaa.jpg";
+import React, { useEffect, useState } from "react";
+import HomepageImage from "../assets/test1.png";
 import CardBook from "../components/CardBook";
 import { useNavigate } from "react-router-dom";
+import { getRecentBooks } from "../services/bookService";
+import Spinner from "../components/Spinner";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import ArticleCard from "../components/ArticleCard";
+import registerImage from "../assets/Card.png";
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // Navigate to catalog page with search query parameter
       navigate(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
     } else {
-      // Navigate to catalog page without search parameter
       navigate("/catalog");
     }
   };
@@ -24,28 +31,24 @@ const HomePage = () => {
     }
   };
 
-  const books = [
-    {
-      image: "https://picsum.photos/200/300?random=1",
-      title: "The Lost World",
-      author: "Arthur Conan Doyle",
-    },
-    {
-      image: "https://picsum.photos/200/300?random=2",
-      title: "Dune",
-      author: "Frank Herbert",
-    },
-    {
-      image: "https://picsum.photos/200/300?random=3",
-      title: "The Hobbit",
-      author: "J.R.R. Tolkien",
-    },
-    {
-      image: "https://picsum.photos/200/300?random=3",
-      title: "The Hobbit",
-      author: "J.R.R. Tolkien",
-    },
-  ];
+  useEffect(() => {
+    const fetchRecentBooks = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const recentBooks = await getRecentBooks();
+        setBooks(recentBooks);
+      } catch (error) {
+        setError(error);
+        console.error("Error fetching recent books:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentBooks();
+  }, []);
+
   return (
     <div className="flex flex-col w-full">
       {/* HERO FULL SCREEN */}
@@ -53,19 +56,19 @@ const HomePage = () => {
         <img
           src={HomepageImage}
           alt="Homepage Background"
-          className="w-full h-full object-cover "
+          className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Welcome to School Library
+            Benvenuti nella Biblioteca Scolastica
           </h1>
           <p className="text-lg md:text-xl text-white mb-6">
-            Explore a curated list of books tailored just for you.
+            Scopri, prenota e leggi i libri disponibili nella nostra biblioteca.
           </p>
           <form onSubmit={handleSearch} className="flex w-full max-w-xl">
             <input
               type="text"
-              placeholder="Search for books..."
+              placeholder="Cerca un libro per titolo, autore..."
               className="w-full p-3 rounded-l-lg border-none focus:outline-none bg-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -73,27 +76,80 @@ const HomePage = () => {
             />
             <button
               type="submit"
-              className="p-3 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700"
+              className="p-3 bg-blue-400 text-white rounded-r-lg hover:bg-blue-700 cursor-pointer"
             >
-              Search
+              Cerca
             </button>
           </form>
         </div>
       </div>
 
-      {/* RECENT BOOKS */}
+      {/* ULTIMI ARRIVI */}
       <div className="w-full max-w-7xl mx-auto p-4 mt-12 border-t-2 border-gray-200">
-        <h2 className="text-2xl font-bold mb-4">Recently Added Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {books.map((book, index) => (
-            <CardBook key={index} book={book} />
-          ))}
+        <h2 className="text-2xl font-bold mb-4">Ultimi Arrivi</h2>
+        <p className="text-gray-600 mb-6">
+          Ecco gli ultimi libri aggiunti alla nostra collezione.
+        </p>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Swiper
+            modules={[Navigation, Pagination]}
+            navigation
+            pagination={{ clickable: true }}
+            spaceBetween={20}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              768: { slidesPerView: 3 },
+              1024: { slidesPerView: 4 },
+            }}
+            autoHeight={true}
+          >
+            {books.map((book) => (
+              <SwiperSlide key={book.id}>
+                <CardBook book={book} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+      </div>
+
+      <div className="w-full bg-blue-50 p-8 mt-12">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6">
+          <div className="md:w-1/2">
+            <h2 className="text-2xl font-bold mb-4">Come diventare membro</h2>
+            <p className="text-gray-700 mb-4">
+              Per prendere in prestito i libri della nostra biblioteca, è
+              necessario registrarsi come membro. Contatta il nostro staff in
+              sede per ricevere la tua carta personale e iniziare subito a
+              leggere!
+            </p>
+            <button className="px-6 py-3 bg-blue-400 text-white rounded-lg hover:bg-blue-600">
+              Scopri di più
+            </button>
+          </div>
+          <div className="md:w-1/2">
+            <img
+              src={registerImage}
+              alt="Registrazione Biblioteca"
+              className="w-full h-auto rounded shadow"
+            />
+          </div>
         </div>
       </div>
 
-      {/* ANNOUNCEMENTS */}
-      <div className="w-full max-w-7xl mx-auto p-4 mt-12">
-        <h2 className="text-2xl font-bold mb-4">Announcements</h2>
+      {/* AVVISI E NOTIZIE */}
+      <div className="w-full max-w-7xl mx-auto p-4 mt-12 border-t-2 border-gray-200">
+        <h2 className="text-2xl font-bold mb-4">Avvisi e Notizie</h2>
+        <p className="text-gray-600 mb-4">
+          Rimani aggiornato sugli eventi, orari e comunicazioni della
+          biblioteca.
+        </p>
+        <ArticleCard />
+        <ArticleCard />
+        <ArticleCard />
+        <ArticleCard />
       </div>
     </div>
   );

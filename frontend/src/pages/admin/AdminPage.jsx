@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import DashBoardMenu from "../../components/componentsStaff/DashBoardMenu";
 import BooksStaffCatalog from "../../components/componentsStaff/BooksStaffCatalog";
+import AuthorStaffCatalog from "../../components/componentsStaff/AuthorStaffCatalog";
 
 const AdminPage = () => {
-  const [selectedMenu, setSelectedMenu] = useState("Books");
+  const [selectedMenu, setSelectedMenu] = useState("Libri");
 
   let content;
   switch (selectedMenu) {
-    case "Books":
+    case "Libri":
       content = <BooksStaffCatalog />;
+      break;
+    case "Autori":
+      content = <AuthorStaffCatalog />;
       break;
 
     default:

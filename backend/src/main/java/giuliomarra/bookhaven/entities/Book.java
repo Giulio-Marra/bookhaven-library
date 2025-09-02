@@ -3,6 +3,8 @@ package giuliomarra.bookhaven.entities;
 import giuliomarra.bookhaven.enums.BookStatus;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "books")
 public class Book {
@@ -18,6 +20,8 @@ public class Book {
     private String image;
     private String position;
 
+    private LocalDate addingDate;
+
 
     @Column(length = 2000)
     private String description;
@@ -27,7 +31,7 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     private BookStatus status;
-    
+
 
     public Book() {
     }
@@ -42,6 +46,7 @@ public class Book {
         this.publishedYear = publishedYear;
         this.numPages = numPages;
         this.status = status;
+        this.addingDate = LocalDate.now();
     }
 
     public Long getId() {
@@ -122,5 +127,13 @@ public class Book {
 
     public void setStatus(BookStatus status) {
         this.status = status;
+    }
+
+    public LocalDate getAddingDate() {
+        return addingDate;
+    }
+
+    public void setAddingDate(LocalDate addingDate) {
+        this.addingDate = addingDate;
     }
 }

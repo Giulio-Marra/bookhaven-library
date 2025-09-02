@@ -6,58 +6,36 @@ import { IoBookOutline } from "react-icons/io5";
 import { MdOutlineArticle } from "react-icons/md";
 
 const DashBoardMenu = ({ selectedMenu, setSelectedMenu }) => {
-  const handleMenuClick = (menu) => {
-    setSelectedMenu(menu);
-  };
+  const handleMenuClick = (menu) => setSelectedMenu(menu);
+
+  const menuItems = [
+    { label: "Libri", icon: <IoBookOutline /> },
+    { label: "Autori", icon: <CiUser /> },
+    { label: "Articoli", icon: <MdOutlineArticle /> },
+    { label: "Utenti", icon: <FiUsers /> },
+    { label: "Prenotazioni", icon: <BsBookmark /> },
+  ];
 
   return (
-    <div className="flex-col w-64">
-      <h1 className="mb-5">School library Staff Panel</h1>
-      <div
-        className={`p-2 flex items-center gap-2 ${
-          selectedMenu === "Books" ? "bg-gray-200" : ""
-        }`}
-        onClick={() => handleMenuClick("Books")}
-      >
-        <IoBookOutline />
-        <p>Books</p>
-      </div>
-      <div
-        className={`p-2 flex items-center gap-2 ${
-          selectedMenu === "Authors" ? "bg-gray-200" : ""
-        }`}
-        onClick={() => handleMenuClick("Authors")}
-      >
-        <CiUser />
-        <p>Authors</p>
-      </div>
-      <div
-        className={`p-2 flex items-center gap-2 ${
-          selectedMenu === "Articles" ? "bg-gray-200" : ""
-        }`}
-        onClick={() => handleMenuClick("Articles")}
-      >
-        <MdOutlineArticle />
-        <p>Articles</p>
-      </div>
-      <div
-        className={`p-2 flex items-center gap-2 ${
-          selectedMenu === "Users" ? "bg-gray-200" : ""
-        }`}
-        onClick={() => handleMenuClick("Users")}
-      >
-        <FiUsers />
-        <p>Users</p>
-      </div>
-      <div
-        className={`p-2 flex items-center gap-2 ${
-          selectedMenu === "Reservations" ? "bg-gray-200" : ""
-        }`}
-        onClick={() => handleMenuClick("Reservations")}
-      >
-        <BsBookmark />
-        <p>Reservations</p>
-      </div>
+    <div className="w-64 p-4 bg-gray-50   space-y-2">
+      <h1 className="text-xl font-bold mb-4 text-gray-800">
+        School Library Staff Panel
+      </h1>
+      {menuItems.map((item) => (
+        <div
+          key={item.label}
+          onClick={() => handleMenuClick(item.label)}
+          className={`flex items-center gap-3 p-3  cursor-pointer transition 
+            ${
+              selectedMenu === item.label
+                ? "bg-blue-100 text-blue-700 font-semibold shadow-sm"
+                : "hover:bg-gray-200 text-gray-700"
+            }`}
+        >
+          {item.icon}
+          <p>{item.label}</p>
+        </div>
+      ))}
     </div>
   );
 };

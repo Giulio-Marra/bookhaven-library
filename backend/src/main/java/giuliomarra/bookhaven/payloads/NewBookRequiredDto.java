@@ -33,5 +33,6 @@ public record NewBookRequiredDto(
         Integer publishedYear,
         Integer numPages
 
+
 ) {
 }

@@ -24,7 +24,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login(formData.code, formData.password, formData.rememberMe);
-      navigate("/homepage");
+      navigate("/");
     } catch (err) {
       console.error("Errore login:", err);
     }
