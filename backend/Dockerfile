@@ -1,20 +1,22 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copia tutto il progetto
-COPY . .
+# Copy Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Rendi mvnw eseguibile
-RUN chmod +x mvnw
+# Download dependencies (this layer will be cached)
+RUN ./mvnw dependency:go-offline -B
 
-# Scarica le dipendenze offline
-RUN ./mvnw dependency:go-offline
+# Copy source code
+COPY src ./src
 
-# Costruisci il jar senza test
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "target/bookhaven-backend-0.0.1-SNAPSHOT.jar"]
-
+# Run the application
+ENTRYPOINT ["java", "-jar", "target/bookhaven-0.0.1-SNAPSHOT.jar"]
