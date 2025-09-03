@@ -1,23 +1,25 @@
-FROM eclipse-temurin:17-jdk-alpine
+# Usa JDK 17 basato su Debian
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-
+# Copia Maven Wrapper e pom.xml
 COPY mvnw pom.xml ./
 COPY .mvn .mvn
 
-
+# Rendi mvnw eseguibile
 RUN chmod +x mvnw
 
-
+# Scarica dipendenze offline
 RUN ./mvnw dependency:go-offline
 
-
+# Copia tutto il progetto
 COPY . .
 
-
+# Costruisci il jar senza test
 RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
+
 CMD ["java", "-jar", "target/bookhaven-backend-0.0.1-SNAPSHOT.jar"]
 
