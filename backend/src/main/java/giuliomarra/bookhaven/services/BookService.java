@@ -81,6 +81,7 @@ public class BookService {
         return book;
     }
 
+    @Transactional
     public Book updateBook(Long id, NewBookRequiredDto body, MultipartFile imageFile) throws IOException, InterruptedException {
         Book book = findById(id);
 
@@ -133,7 +134,7 @@ public class BookService {
     }
 
     public Page<BookDetailDto> searchBooks(String searchTerm, String category, Pageable pageable) {
-        
+
         Page<Book> books = bookRepository.searchBooksByTitleAuthorOrCategory(searchTerm, category, pageable);
 
         return books.map(book -> {

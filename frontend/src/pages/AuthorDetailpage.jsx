@@ -51,7 +51,7 @@ const AuthorDetailpage = () => {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                About
+                Su di lui
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
                 {author.biography}

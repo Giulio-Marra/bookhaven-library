@@ -11,15 +11,15 @@ public class BookDetailDto {
     private String title;
     private String image;
     private String isbn;
-    private int numPages;
+    private Integer numPages;
     private String position;
-    private int publishedYear;
+    private Integer publishedYear;
     private BookStatus status;
     private String description;
     private String categories;
     private List<Author> authors;
 
-    public BookDetailDto(Long id, String title, String image, String isbn, int numPages, String position, int publishedYear, BookStatus status, String description, String categories, List<Author> authors) {
+    public BookDetailDto(Long id, String title, String image, String isbn, Integer numPages, String position, Integer publishedYear, BookStatus status, String description, String categories, List<Author> authors) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -65,11 +65,11 @@ public class BookDetailDto {
         this.isbn = isbn;
     }
 
-    public int getNumPages() {
+    public Integer getNumPages() {
         return numPages;
     }
 
-    public void setNumPages(int numPages) {
+    public void setNumPages(Integer numPages) {
         this.numPages = numPages;
     }
 
@@ -81,11 +81,11 @@ public class BookDetailDto {
         this.position = position;
     }
 
-    public int getPublishedYear() {
+    public Integer getPublishedYear() {
         return publishedYear;
     }
 
-    public void setPublishedYear(int publishedYear) {
+    public void setPublishedYear(Integer publishedYear) {
         this.publishedYear = publishedYear;
     }
 

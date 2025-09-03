@@ -5,6 +5,7 @@ import giuliomarra.bookhaven.payloads.ListAuthorNameAndIdDto;
 import giuliomarra.bookhaven.payloads.NewAuthorRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.services.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public class AuthorController {
     // SOLO STAFF
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
-    public ResponseEntity<Author> addAuthor(@RequestBody NewAuthorRequiredDto body) {
+    public ResponseEntity<Author> addAuthor(@Valid @RequestBody NewAuthorRequiredDto body) {
         Author author = authorService.addNewAuthor(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(author);
     }
@@ -49,7 +50,7 @@ public class AuthorController {
     // SOLO STAFF
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody NewAuthorRequiredDto body) {
+    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @Valid @RequestBody NewAuthorRequiredDto body) {
         return ResponseEntity.ok(authorService.updateAuthor(id, body));
     }
 

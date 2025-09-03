@@ -24,7 +24,7 @@ const MyNavbar = () => {
               Catalogo
             </Link>
             <Link to="/event" className="hover:text-blue-300">
-              Articoli
+              Notizie
             </Link>
             <Link to="/contact" className="hover:text-blue-300">
               Contatti
@@ -37,7 +37,7 @@ const MyNavbar = () => {
           {isAuthenticated && user?.role === "STAFF" && (
             <Link
               to="/admin"
-              className="hover:bg-blue-600 bg-blue-400 p-2 text-white px-4 rounded-md"
+              className="hover:bg-blue-600 bg-blue-400 p-2 text-white px-4 "
             >
               Admin Panel
             </Link>
@@ -104,7 +104,7 @@ const MyNavbar = () => {
             Catalogo
           </Link>
           <Link to="/event" className="block hover:text-blue-300">
-            Articoli
+            Notizie
           </Link>
           <Link to="/contact" className="block hover:text-blue-300">
             Contatti

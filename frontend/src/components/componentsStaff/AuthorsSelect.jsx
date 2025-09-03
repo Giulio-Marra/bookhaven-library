@@ -28,7 +28,7 @@ const AuthorsSelectModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-lg shadow-lg w-96 max-w-full p-6">
+      <div className="bg-white shadow-lg w-96 max-w-full p-6">
         <h2 className="text-xl font-bold mb-4">Seleziona autori</h2>
         <input
           type="text"
@@ -56,13 +56,13 @@ const AuthorsSelectModal = ({
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300"
+            className="px-4 py-2  bg-gray-200 hover:bg-gray-300 cursor-pointer"
           >
             Cancella
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+            className="px-4 py-2  bg-blue-400 text-white hover:bg-blue-600 cursor-pointer"
           >
             Aggiungi
           </button>

@@ -50,6 +50,7 @@ const AuthorStaffCatalog = () => {
   const handleConfirmDelete = async () => {
     if (!authorToDelete) return;
     try {
+      setModalOpen(false);
       setLoading(true);
       await deleteAuthor(authorToDelete, token);
       alert("Autore eliminato con successo");
@@ -66,7 +67,7 @@ const AuthorStaffCatalog = () => {
   return (
     <div className="w-full space-y-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Manage Authors</h1>
+        <h1 className="text-2xl font-bold">Gestione Autori</h1>
         <button
           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
           onClick={() => navigate("/admin/add-author")}

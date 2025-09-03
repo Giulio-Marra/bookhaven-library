@@ -6,7 +6,6 @@ import giuliomarra.bookhaven.payloads.BookDetailDto;
 import giuliomarra.bookhaven.payloads.NewBookRequiredDto;
 import giuliomarra.bookhaven.payloads.RemoveEntityResponseDto;
 import giuliomarra.bookhaven.services.BookService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +31,7 @@ public class BookController {
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
     public ResponseEntity<Book> addBook(
-            @Valid @RequestPart("data") NewBookRequiredDto body,
+            @RequestPart("data") NewBookRequiredDto body,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) throws IOException, InterruptedException {
         Book book = bookService.addNewBook(body, imageFile);

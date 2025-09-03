@@ -1,33 +1,12 @@
 import React, { useState } from "react";
 import { addNewBook } from "../../services/bookService";
 import AuthorsSelectModal from "../../components/componentsStaff/AuthorsSelect";
-
-const InputField = ({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-}) => (
-  <div className="flex flex-col gap-1">
-    <label className="flex flex-col w-full">
-      <span className="text-gray-800 text-sm font-medium">{label}</span>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-      />
-    </label>
-  </div>
-);
+import Spinner from "../../components/Spinner";
+import InputField from "../../components/componentsStaff/InputField";
 
 const AddBooksPage = () => {
   const token = localStorage.getItem("authToken");
-  const [selectedAuthors, setSelectedAuthors] = useState([]); // array di oggetti {id, name}
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     isbn: "",
@@ -40,6 +19,8 @@ const AddBooksPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [authorsModalOpen, setAuthorsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -53,6 +34,8 @@ const AddBooksPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       await addNewBook(
         { ...formData, authorIds: selectedAuthors.map((a) => a.id) },
@@ -74,9 +57,11 @@ const AddBooksPage = () => {
     } catch (err) {
       console.error(err);
       alert("Errore durante il salvataggio del libro");
+    } finally {
+      setLoading(false);
     }
   };
-
+  if (loading) return <Spinner />;
   return (
     <div className="flex justify-center py-10 px-4 min-h-screen mt-15">
       <form
@@ -84,40 +69,44 @@ const AddBooksPage = () => {
         className="w-full max-w-4xl bg-white p-6 rounded-xl space-y-6 transition-all duration-300"
       >
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
-          Add New Book
+          Aggiungi nuovo libro
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
-            label="Title"
+            label="Titolo"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="Enter book title"
+            placeholder="Esempio: Il Signore degli Anelli"
+            required={true}
           />
           <InputField
             label="ISBN"
             name="isbn"
             value={formData.isbn}
             onChange={handleChange}
-            placeholder="Enter ISBN"
+            placeholder="Esempio: 978-3-16-148410-0"
+            required={true}
           />
           <InputField
-            label="Categories"
+            label="Categorie"
             name="categories"
             value={formData.categories}
             onChange={handleChange}
             placeholder="Fantasy, Sci-Fi..."
+            required={true}
           />
           <InputField
-            label="Library Position"
+            label="Posizione in Biblioteca"
             name="position"
             value={formData.position}
             onChange={handleChange}
             placeholder="Shelf A2"
+            required={true}
           />
           <InputField
-            label="Published Year"
+            label="Anno di Pubblicazione"
             name="publishedYear"
             value={formData.publishedYear}
             onChange={handleChange}
@@ -125,7 +114,7 @@ const AddBooksPage = () => {
             type="number"
           />
           <InputField
-            label="Number of Pages"
+            label="Numero di Pagine"
             name="numPages"
             value={formData.numPages}
             onChange={handleChange}
@@ -136,9 +125,7 @@ const AddBooksPage = () => {
 
         {/* Authors Modal Trigger + Tag */}
         <div className="flex flex-col gap-2">
-          <span className="text-gray-800 text-sm font-medium mb-1">
-            Authors
-          </span>
+          <span className="text-gray-800 text-sm font-medium mb-1">Autori</span>
           <div className="flex flex-wrap gap-2">
             {selectedAuthors.map((author) => (
               <span
@@ -165,7 +152,7 @@ const AddBooksPage = () => {
             onClick={() => setAuthorsModalOpen(true)}
             className="bg-blue-50 border border-blue-300 text-blue-700 px-3 py-2 rounded-md hover:bg-blue-100 transition w-full text-left"
           >
-            Select Authors
+            Seleziona Autori
           </button>
         </div>
 
@@ -173,11 +160,11 @@ const AddBooksPage = () => {
         <div className="flex flex-col gap-1">
           <label className="flex flex-col w-full">
             <span className="text-gray-800 text-sm font-medium">
-              Description
+              Descrizione
             </span>
             <textarea
               name="description"
-              placeholder="Book synopsis..."
+              placeholder="Sinossi del libro..."
               value={formData.description}
               onChange={handleChange}
               rows={4}
@@ -196,7 +183,7 @@ const AddBooksPage = () => {
             />
           ) : (
             <p className="text-gray-500 text-sm mb-2 text-center">
-              Upload Cover
+              Anteprima copertina del libro
             </p>
           )}
           <input
@@ -210,9 +197,9 @@ const AddBooksPage = () => {
 
         <button
           type="submit"
-          className="w-full rounded-md bg-blue-600 text-white py-2 font-semibold hover:bg-blue-700 transition"
+          className="w-full  bg-blue-400 text-white py-2 font-semibold hover:bg-blue-600 transition cursor-pointer"
         >
-          Add Book
+          Aggiungi Libro
         </button>
 
         {/* Authors Modal */}

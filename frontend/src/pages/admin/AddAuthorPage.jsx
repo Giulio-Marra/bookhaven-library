@@ -1,29 +1,7 @@
 import React, { useState } from "react";
 import { addNewAuthor } from "../../services/authorService";
 import Spinner from "../../components/Spinner";
-
-const InputField = ({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-}) => (
-  <div className="flex flex-col gap-1">
-    <label className="flex flex-col w-full">
-      <span className="text-gray-800 text-sm font-medium">{label}</span>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full  border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-      />
-    </label>
-  </div>
-);
+import InputField from "../../components/componentsStaff/InputField";
 
 const AddAuthorPage = () => {
   const token = localStorage.getItem("authToken");
@@ -72,13 +50,10 @@ const AddAuthorPage = () => {
     setError(null);
 
     try {
-      // Se c'è il nome, recupera la cover prima di inviare
       let coverLink = "";
       if (formData.name.trim() !== "") {
         coverLink = await fetchAuthorCover(formData.name.trim());
       }
-
-      // Invia i dati con la cover se presente
       await addNewAuthor({ ...formData, urlImage: coverLink }, token);
       alert("Autore aggiunto con successo!");
       setFormData({
@@ -104,7 +79,7 @@ const AddAuthorPage = () => {
     <div className="flex justify-center py-10 px-4 min-h-screen mt-15">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-white p-6 rounded-xl space-y-6 transition-all duration-300"
+        className="w-full max-w-2xl bg-white p-6  space-y-6 transition-all duration-300"
       >
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Aggiungi Nuovo Autore
@@ -117,6 +92,7 @@ const AddAuthorPage = () => {
             value={formData.name}
             onChange={handleChange}
             placeholder="Nome autore"
+            required={true}
           />
           <InputField
             label="Data di Nascita"
@@ -163,10 +139,10 @@ const AddAuthorPage = () => {
             />
           </div>
         )}
-
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
         <button
           type="submit"
-          className="w-full  bg-blue-600 text-white py-2 font-semibold hover:bg-blue-700 transition"
+          className="w-full  bg-blue-400 text-white py-2 font-semibold hover:bg-blue-600 transition cursor-pointer"
         >
           Aggiungi Autore
         </button>

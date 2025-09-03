@@ -125,7 +125,7 @@ const HomePage = () => {
               sede per ricevere la tua carta personale e iniziare subito a
               leggere!
             </p>
-            <button className="px-6 py-3 bg-blue-400 text-white rounded-lg hover:bg-blue-600">
+            <button className="px-6 py-3 bg-blue-400 text-white  hover:bg-blue-600 cursor-pointer ">
               Scopri di più
             </button>
           </div>

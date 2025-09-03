@@ -57,17 +57,21 @@ const BookDetailPage = () => {
           <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
           {/* Autori */}
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-500">Authors</p>
+            <p className="text-sm font-medium text-gray-500">Autori</p>
             <div className="flex flex-wrap gap-2">
-              {book.authors?.map((author) => (
-                <button
-                  key={author.id}
-                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
-                  onClick={() => navigate(`/author/detail/${author.id}`)}
-                >
-                  {author.name}
-                </button>
-              ))}
+              {book.authors && book.authors.length > 0 ? (
+                book.authors.map((author) => (
+                  <button
+                    key={author.id}
+                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                    onClick={() => navigate(`/author/detail/${author.id}`)}
+                  >
+                    {author.name ?? "Sconosciuto"}
+                  </button>
+                ))
+              ) : (
+                <span className="text-gray-500 italic">Nessun autore</span>
+              )}
             </div>
           </div>
 
@@ -87,16 +91,16 @@ const BookDetailPage = () => {
               {book.status}
             </span>
             {user ? (
-              <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                Reserve Book
+              <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-400 border border-transparent cursor-pointer shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Prenota Libro
               </button>
             ) : (
               <>
-                <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-400 border border-transparent rounded-md shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                  Reserve Book
+                <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-400 border border-transparent cursor-pointer shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  Prenota Libro
                 </button>
                 <p className="text-gray-600 ">
-                  Please log in to reserve this book.
+                  Accedi per prenotare questo libro.
                 </p>
               </>
             )}
@@ -107,28 +111,37 @@ const BookDetailPage = () => {
       {/* Dettagli libro */}
       <div className="bg-white border border-gray-200 rounded-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">
-          Book Details
+          Dettagli:
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
           <div>
             <span className="block text-sm font-medium text-gray-500 mb-1">
-              Published
+              Pubblicato
             </span>
-            <span className="text-lg font-semibold text-gray-900">
-              {book.publishedYear}
-            </span>
+            {book.publishedYear ? (
+              <span className="text-lg font-semibold text-gray-900">
+                {book.publishedYear}
+              </span>
+            ) : (
+              <span className="text-lg font-semibold text-gray-900">_</span>
+            )}
           </div>
           <div>
             <span className="block text-sm font-medium text-gray-500 mb-1">
-              Pages
+              Pagine
             </span>
-            <span className="text-lg font-semibold text-gray-900">
-              {book.numPages}
-            </span>
+            {book.numPages ? (
+              <span className="text-lg font-semibold text-gray-900">
+                {book.numPages}
+              </span>
+            ) : (
+              <span className="text-lg font-semibold text-gray-900">_</span>
+            )}
           </div>
+
           <div>
             <span className="block text-sm font-medium text-gray-500 mb-1">
-              Categories
+              Categorie
             </span>
             <span className="text-lg font-semibold text-gray-900">
               {book.categories}

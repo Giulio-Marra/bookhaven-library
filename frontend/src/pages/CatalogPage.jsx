@@ -116,7 +116,7 @@ const CatalogPage = () => {
           <option value="fantasy">Fantasy</option>
           <option value="sci-fi">Sci-Fi</option>
           <option value="romance">Romance</option>
-          {/* aggiungi altre categorie */}
+          <option value="giallo">Giallo</option>
         </select>
       </div>
 
