@@ -1,4 +1,4 @@
-# Usa JDK 17 basato su Debian
+# Usa JDK 17 basato su Debian (non Alpine)
 FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY .mvn .mvn
 # Rendi mvnw eseguibile
 RUN chmod +x mvnw
 
-# Scarica dipendenze offline
+# Scarica le dipendenze offline
 RUN ./mvnw dependency:go-offline
 
 # Copia tutto il progetto
@@ -19,7 +19,9 @@ COPY . .
 # Costruisci il jar senza test
 RUN ./mvnw clean package -DskipTests
 
+# Espone la porta di Spring Boot
 EXPOSE 8080
 
+# Avvio del jar
 CMD ["java", "-jar", "target/bookhaven-backend-0.0.1-SNAPSHOT.jar"]
 
