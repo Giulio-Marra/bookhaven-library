@@ -1,4 +1,4 @@
-# Usa JDK 17 basato su Debian (non Alpine)
+# Usa JDK 17 basato su Debian (più compatibile di Alpine)
 FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
