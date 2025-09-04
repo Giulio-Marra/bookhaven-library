@@ -9,7 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import ArticleCard from "../components/ArticleCard";
 import registerImage from "../assets/Card.png";
 
-const HomePage = () => {
+const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
@@ -48,6 +48,23 @@ const HomePage = () => {
 
     fetchRecentBooks();
   }, []);
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="bg-white p-6 rounded shadow-md text-center space-y-4">
+          <h2 className="text-xl font-bold text-red-500">Errore</h2>
+          <p>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Riprova
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -155,4 +172,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default MainPage;
