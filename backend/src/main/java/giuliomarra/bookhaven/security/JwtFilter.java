@@ -49,7 +49,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath()) || new AntPathMatcher().match("/**/public/**", request.getServletPath())
-                ;
+        String servletPath = request.getServletPath();
+        String requestURI = request.getRequestURI();
+
+        // Log per debug - rimuovili dopo aver risolto
+        System.out.println("=== JWT FILTER DEBUG ===");
+        System.out.println("ServletPath: " + servletPath);
+        System.out.println("RequestURI: " + requestURI);
+
+        AntPathMatcher matcher = new AntPathMatcher();
+        boolean shouldSkip = matcher.match("/auth/**", servletPath) ||
+                matcher.match("/**/public/**", servletPath);
+
+        System.out.println("Should skip filter: " + shouldSkip);
+        System.out.println("========================");
+
+        return shouldSkip;
     }
 }
