@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const articleTypes = ["NEWS", "EVENT", "BLOG", "ANNOUNCEMENT", "REVIEW"];
 const AddArticlePage = () => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
@@ -92,7 +94,6 @@ const AddArticlePage = () => {
           </select>
         </div>
 
-        {/* Contenuto */}
         <div className="flex flex-col">
           <label className="font-semibold mb-1">Contenuto</label>
           <textarea
@@ -100,13 +101,11 @@ const AddArticlePage = () => {
             value={formData.content}
             onChange={handleChange}
             placeholder="Scrivi qui il contenuto dell'articolo..."
-            rows={6}
+            rows={15}
             className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 transition resize-none"
             required
           />
         </div>
-
-        {/* Bottone */}
         <button
           type="submit"
           className="w-full bg-blue-400 text-white py-3 rounded-md font-semibold hover:bg-blue-600 transition"

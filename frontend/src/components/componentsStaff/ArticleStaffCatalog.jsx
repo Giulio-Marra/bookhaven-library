@@ -9,7 +9,9 @@ import Spinner from "../Spinner";
 import ConfirmModal from "./ConfirmModal";
 
 const ArticleStaffCatalog = () => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
 
   const [articles, setArticles] = useState([]);

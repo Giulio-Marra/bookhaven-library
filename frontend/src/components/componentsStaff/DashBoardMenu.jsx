@@ -17,25 +17,28 @@ const DashBoardMenu = ({ selectedMenu, setSelectedMenu }) => {
   ];
 
   return (
-    <div className="w-64 p-4 bg-gray-50  h-85">
-      <h1 className="text-xl font-bold mb-4 text-gray-800">
+    <div className="  ">
+      <h1 className="hidden md:block text-xl font-bold mb-4 text-gray-800 px-4 mt-2">
         School Library Staff Panel
       </h1>
-      {menuItems.map((item) => (
-        <div
-          key={item.label}
-          onClick={() => handleMenuClick(item.label)}
-          className={`flex items-center gap-3 p-3  cursor-pointer transition 
+
+      <div className="flex md:flex-col overflow-x-auto md:overflow-visible">
+        {menuItems.map((item) => (
+          <div
+            key={item.label}
+            onClick={() => handleMenuClick(item.label)}
+            className={`flex items-center gap-2 md:gap-3 p-3 cursor-pointer transition whitespace-nowrap
             ${
               selectedMenu === item.label
                 ? "bg-blue-100 text-blue-700 font-semibold shadow-sm"
                 : "hover:bg-gray-200 text-gray-700"
             }`}
-        >
-          {item.icon}
-          <p>{item.label}</p>
-        </div>
-      ))}
+          >
+            {item.icon}
+            <p>{item.label}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

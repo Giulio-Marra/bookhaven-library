@@ -97,7 +97,7 @@ const MyNavbar = () => {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden mt-2 px-4 space-y-2 bg-white border-t border-gray-200">
-          <Link to="/homepage" className="block hover:text-blue-300">
+          <Link to="/" className="block hover:text-blue-300">
             Home
           </Link>
           <Link to="/catalog" className="block hover:text-blue-300">

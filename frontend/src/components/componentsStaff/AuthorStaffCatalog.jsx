@@ -14,7 +14,9 @@ const AuthorStaffCatalog = () => {
   const [authorToDelete, setAuthorToDelete] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
 
   const loadAuthors = async () => {

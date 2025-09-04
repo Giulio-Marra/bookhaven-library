@@ -5,7 +5,9 @@ import InputField from "../../components/componentsStaff/InputField";
 import { useNavigate } from "react-router-dom";
 
 const AddAuthorPage = () => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -67,7 +69,7 @@ const AddAuthorPage = () => {
         biography: "",
       });
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
       alert("Errore durante l'aggiunta dell'autore");
     } finally {
       setLoading(false);
@@ -77,6 +79,7 @@ const AddAuthorPage = () => {
   if (loading) {
     return <Spinner />;
   }
+  if (error) return <div>Error: {error}</div>;
   return (
     <div className="flex justify-center py-10 px-4 min-h-screen mt-15">
       <form

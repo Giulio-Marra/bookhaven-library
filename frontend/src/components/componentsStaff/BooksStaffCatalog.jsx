@@ -12,7 +12,9 @@ const BooksStaffCatalog = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const [modalOpen, setModalOpen] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
   const navigate = useNavigate();
@@ -51,13 +53,14 @@ const BooksStaffCatalog = () => {
     if (!bookToDelete) return;
     try {
       setLoading(true);
+      setModalOpen(false);
       await deleteBooks(bookToDelete, token);
       await loadBooks();
     } catch (err) {
       setError(err);
     } finally {
       setLoading(false);
-      setModalOpen(false);
+
       setBookToDelete(null);
       alert("Libro eliminato con successo");
     }

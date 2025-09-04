@@ -29,7 +29,9 @@ const InputField = ({
 
 const UpdateBooksPage = () => {
   const { id } = useParams();
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

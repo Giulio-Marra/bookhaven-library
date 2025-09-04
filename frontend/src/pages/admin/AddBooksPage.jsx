@@ -6,7 +6,9 @@ import InputField from "../../components/componentsStaff/InputField";
 import { useNavigate } from "react-router-dom";
 
 const AddBooksPage = () => {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authToken")
+    ? localStorage.getItem("authToken")
+    : sessionStorage.getItem("authToken");
   const navigate = useNavigate();
   const [selectedAuthors, setSelectedAuthors] = useState([]);
   const [formData, setFormData] = useState({
