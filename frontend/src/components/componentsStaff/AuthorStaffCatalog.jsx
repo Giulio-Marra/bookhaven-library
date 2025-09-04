@@ -21,7 +21,7 @@ const AuthorStaffCatalog = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getAuthors(searchQuery, page, 20, token);
+      const data = await getAuthors(searchQuery, page, 20);
       setAuthors(data.content || data);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
