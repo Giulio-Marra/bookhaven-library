@@ -90,10 +90,7 @@ export const addNewBook = async (bookData, token, imageFile) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || "Errore durante la creazione del libro"
-      );
+      throw new Error("Errore durante la creazione del libro");
     }
 
     return await response.json();
@@ -130,7 +127,7 @@ export const updateBook = async (id, bookData, token, imageFile) => {
           publishedYear: parseInt(publishedYear),
           numPages: parseInt(numPages),
           authorIds: authorIds.map((id) => parseInt(id)),
-          image, // opzionale
+          image,
         }),
       ],
       { type: "application/json" }
