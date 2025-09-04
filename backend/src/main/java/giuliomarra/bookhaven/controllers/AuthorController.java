@@ -67,6 +67,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.getAllAuthorsNamesAndIds());
     }
 
+    @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/public/search")
     public ResponseEntity<Page<Author>> searchAuthors(
             @RequestParam String name,
