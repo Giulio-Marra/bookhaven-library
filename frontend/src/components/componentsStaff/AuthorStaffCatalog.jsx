@@ -38,7 +38,7 @@ const AuthorStaffCatalog = () => {
   const handleSearchKey = (e) => {
     if (e.key === "Enter") {
       setSearchQuery(search);
-      setPage(0); // reset alla prima pagina quando cerchi
+      setPage(0);
     }
   };
 

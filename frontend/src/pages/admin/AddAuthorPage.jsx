@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { addNewAuthor } from "../../services/authorService";
 import Spinner from "../../components/Spinner";
 import InputField from "../../components/componentsStaff/InputField";
+import { useNavigate } from "react-router-dom";
 
 const AddAuthorPage = () => {
   const token = localStorage.getItem("authToken");
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     dateOfBirth: "",
@@ -81,10 +83,17 @@ const AddAuthorPage = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-2xl bg-white p-6  space-y-6 transition-all duration-300"
       >
+        {" "}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="  font-semibold text-red-400 cursor-pointer hover:underline "
+        >
+          Torna indietro
+        </button>
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Aggiungi Nuovo Autore
         </h1>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             label="Nome"
@@ -116,7 +125,6 @@ const AddAuthorPage = () => {
             placeholder="e.g. Italian"
           />
         </div>
-
         <div className="flex flex-col gap-1">
           <label className="flex flex-col w-full">
             <span className="text-gray-800 text-sm font-medium">Biografia</span>

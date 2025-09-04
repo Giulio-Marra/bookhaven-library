@@ -10,9 +10,6 @@ public record NewArticleRequiredDto(
         @Size(max = 255, message = "Il titolo non può superare i 255 caratteri")
         String title,
 
-        @NotBlank(message = "L'immagine non può essere vuota")
-        String image,
-
         @NotNull(message = "Il tipo di articolo è obbligatorio")
         ArticleType articleType,
 

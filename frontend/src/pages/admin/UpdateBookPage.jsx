@@ -112,6 +112,13 @@ const UpdateBooksPage = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-4xl bg-white p-6 rounded-xl space-y-6 transition-all duration-300"
       >
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="  font-semibold text-red-400 cursor-pointer hover:underline "
+        >
+          Torna indietro
+        </button>
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Modifica Libro
         </h1>

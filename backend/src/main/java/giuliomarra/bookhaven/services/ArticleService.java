@@ -2,6 +2,7 @@ package giuliomarra.bookhaven.services;
 
 import giuliomarra.bookhaven.entities.Article;
 import giuliomarra.bookhaven.entities.Staff;
+import giuliomarra.bookhaven.enums.ArticleType;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.NewArticleRequiredDto;
 import giuliomarra.bookhaven.repositories.ArticleRepository;
@@ -80,4 +81,16 @@ public class ArticleService {
     public List<Article> getLast5UpdatedArticles() {
         return articleRepository.findTop5ByOrderByUpdatedAtDesc();
     }
+
+    public Page<Article> getArticlesByOptionalFilters(ArticleType type, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        LocalDateTime minDate = LocalDateTime.of(1970, 1, 1, 0, 0);
+        LocalDateTime maxDate = LocalDateTime.of(3000, 1, 1, 0, 0);
+
+        if (start == null) start = minDate;
+        if (end == null) end = maxDate;
+
+        return articleRepository.findArticlesByOptionalFilters(type, start, end, pageable);
+    }
+
+
 }

@@ -19,7 +19,7 @@ export const loginUser = (code, password, rememberMe) => async (dispatch) => {
     const token = await login(code, password, rememberMe);
     if (!token) throw new Error("Login fallito: nessun token ricevuto");
 
-    const user = await getCurrentUser(token); // passiamo direttamente il token
+    const user = await getCurrentUser(token);
     dispatch(setUser(user));
   } catch (err) {
     dispatch(setError(err.message));
@@ -36,6 +36,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
     const user = await getCurrentUser(token);
     if (user) dispatch(setUser(user));
   } catch (err) {
+    dispatch(setError(err.message));
     dispatch(removeUser());
   } finally {
     dispatch(setLoading(false));

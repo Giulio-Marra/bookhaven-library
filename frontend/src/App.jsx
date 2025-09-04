@@ -18,6 +18,7 @@ import ContactPage from "./pages/ContactPage";
 import UpdateBooksPage from "./pages/admin/UpdateBookPage";
 import AddAuthorPage from "./pages/admin/AddAuthorPage";
 import UpdateAuthorPage from "./pages/admin/UpdateAuthorPage";
+import AddArticlePage from "./pages/admin/AddArticlePage";
 
 function App() {
   const { getCurrentUser, isLoading, role } = useAuth();
@@ -113,6 +114,16 @@ function App() {
             <AdminRoute role={role}>
               <MainLayout>
                 <AddAuthorPage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/add-article"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <AddArticlePage />
               </MainLayout>
             </AdminRoute>
           }

@@ -2,11 +2,13 @@ package giuliomarra.bookhaven.controllers;
 
 import giuliomarra.bookhaven.entities.Article;
 import giuliomarra.bookhaven.entities.Staff;
+import giuliomarra.bookhaven.enums.ArticleType;
 import giuliomarra.bookhaven.payloads.NewArticleRequiredDto;
 import giuliomarra.bookhaven.services.ArticleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,8 +40,7 @@ public class ArticleController {
     }
 
     // TROVA ARTICOLO PER ID
-    @PreAuthorize("hasAuthority('STAFF')")
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable Long id) {
         Article article = articleService.findById(id);
         return ResponseEntity.ok(article);
@@ -102,4 +103,17 @@ public class ArticleController {
         Page<Article> articles = articleService.getArticlesByUpdatedAtRange(startDate, endDate, pageable);
         return ResponseEntity.ok(articles);
     }
+
+    @GetMapping("/public/filter")
+    public Page<Article> getArticlesByOptionalFilters(
+            @RequestParam(required = false) ArticleType type,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return articleService.getArticlesByOptionalFilters(type, start, end, PageRequest.of(page, size));
+    }
+
+
 }
