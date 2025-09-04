@@ -63,16 +63,12 @@ export const addNewAuthor = async (authorData, token) => {
   }
 };
 
-export const getAuthors = async (searchAuthor, page, size, token) => {
+export const getAuthors = async (searchAuthor, page, size) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/authors/search?name=${searchAuthor}&page=${page}&size=${size}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
       }
     );
 

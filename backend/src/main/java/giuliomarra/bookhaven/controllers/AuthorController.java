@@ -67,7 +67,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.getAllAuthorsNamesAndIds());
     }
 
-    @GetMapping("/search")
+    @GetMapping("/public/search")
     public ResponseEntity<Page<Author>> searchAuthors(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int page,
