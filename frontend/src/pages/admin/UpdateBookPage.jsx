@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getBookById, updateBook } from "../../services/bookService";
 import AuthorsSelectModal from "../../components/componentsStaff/AuthorsSelect";
 import Spinner from "../../components/Spinner";
+import SelectField from "../../components/componentsStaff/SelectField";
 
 const InputField = ({
   label,
@@ -140,13 +141,31 @@ const UpdateBooksPage = () => {
             onChange={handleChange}
             placeholder="Inserisci ISBN"
           />
-          <InputField
-            label="Categorie"
+          <SelectField
+            label="Categoria"
             name="categories"
             value={formData.categories}
             onChange={handleChange}
-            placeholder="Fantasy, Sci-Fi..."
+            required={true}
+            options={[
+              "Fantasy",
+              "Fantascienza",
+              "Romance",
+              "Giallo",
+              "Thriller",
+              "Horror",
+              "Biografia",
+              "Storia",
+              "Self-Help",
+              "Avventura",
+              "Poetico",
+              "Filosofia",
+              "Arte",
+              "Tecnologia",
+              "Classici",
+            ]}
           />
+
           <InputField
             label="Posizione in Biblioteca"
             name="position"

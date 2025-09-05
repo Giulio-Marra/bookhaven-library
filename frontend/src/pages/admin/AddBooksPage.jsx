@@ -4,6 +4,7 @@ import AuthorsSelectModal from "../../components/componentsStaff/AuthorsSelect";
 import Spinner from "../../components/Spinner";
 import InputField from "../../components/componentsStaff/InputField";
 import { useNavigate } from "react-router-dom";
+import SelectField from "../../components/componentsStaff/SelectField";
 
 const AddBooksPage = () => {
   const token = localStorage.getItem("authToken")
@@ -100,14 +101,31 @@ const AddBooksPage = () => {
             placeholder="Esempio: 978-3-16-148410-0"
             required={true}
           />
-          <InputField
-            label="Categorie"
+          <SelectField
+            label="Categoria"
             name="categories"
             value={formData.categories}
             onChange={handleChange}
-            placeholder="Fantasy, Sci-Fi..."
             required={true}
+            options={[
+              "Fantasy",
+              "Fantascienza",
+              "Romance",
+              "Giallo",
+              "Thriller",
+              "Horror",
+              "Biografia",
+              "Storia",
+              "Self-Help",
+              "Avventura",
+              "Poetico",
+              "Filosofia",
+              "Arte",
+              "Tecnologia",
+              "Classici",
+            ]}
           />
+
           <InputField
             label="Posizione in Biblioteca"
             name="position"

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 const LoginPage = () => {
   const { login, isLoading, error } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     code: "",
@@ -23,21 +25,24 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await login(formData.code, formData.password, formData.rememberMe);
-      navigate("/");
+      if (!error) {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Errore login:", err);
+    } finally {
+      setLoading(false);
     }
   };
-
+  if (loading || isLoading) return <Spinner />;
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-blue-400 via-indigo-500 to-purple-600">
       <div className="w-full max-w-md bg-white p-10 shadow-xl">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Accedi
         </h2>
-
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -89,6 +94,11 @@ const LoginPage = () => {
               Password dimenticata?
             </a>
           </div>
+          {error && (
+            <p className="text-red-500 text-sm text-center">
+              Credenziali errate, riprova.
+            </p>
+          )}
 
           <button
             type="submit"

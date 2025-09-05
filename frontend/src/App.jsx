@@ -25,29 +25,13 @@ import ArticleDetailPage from "./pages/ArticleDetailPage";
 import ArticlesPage from "./pages/ArticlesPage";
 
 function App() {
-  const { getCurrentUser, isLoading, role, error } = useAuth();
+  const { getCurrentUser, isLoading, role } = useAuth();
 
   useEffect(() => {
     getCurrentUser();
   }, []);
 
   if (isLoading) return <Spinner />;
-
-  if (error)
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="bg-white p-6 rounded shadow-md text-center space-y-4">
-          <h2 className="text-xl font-bold text-red-500">Errore</h2>
-          <p>{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Riprova
-          </button>
-        </div>
-      </div>
-    );
 
   return (
     <BrowserRouter>

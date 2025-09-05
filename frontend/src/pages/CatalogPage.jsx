@@ -114,9 +114,20 @@ const CatalogPage = () => {
         >
           <option value="">Tutte le categorie</option>
           <option value="fantasy">Fantasy</option>
-          <option value="sci-fi">Sci-Fi</option>
+          <option value="fantascienza">Fantascienza</option>
           <option value="romance">Romance</option>
           <option value="giallo">Giallo</option>
+          <option value="thriller">Thriller</option>
+          <option value="horror">Horror</option>
+          <option value="biografia">Biografia</option>
+          <option value="storia">Storia</option>
+          <option value="self-help">Self-Help</option>
+          <option value="avventura">Avventura</option>
+          <option value="poetico">Poetico</option>
+          <option value="filosofia">Filosofia</option>
+          <option value="arte">Arte</option>
+          <option value="tecnologia">Tecnologia</option>
+          <option value="classici">Classici</option>
         </select>
       </div>
 

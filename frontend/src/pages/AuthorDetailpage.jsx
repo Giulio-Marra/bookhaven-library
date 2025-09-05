@@ -21,7 +21,7 @@ const AuthorDetailpage = () => {
         setAuthor(authorData);
 
         const booksData = await getBookByAuthorId(authorId);
-        setBooks(booksData || []); // fallback a array vuota
+        setBooks(booksData || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -39,7 +39,6 @@ const AuthorDetailpage = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6 mt-16">
-      {/* Author Section */}
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row gap-8 items-start">
           <div
@@ -51,7 +50,7 @@ const AuthorDetailpage = () => {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                Su di lui
+                Biografia
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
                 {author.biography}
@@ -64,7 +63,7 @@ const AuthorDetailpage = () => {
       {/* Books Section */}
       <div className="border-t border-gray-200 pt-10">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">
-          {author.name}'s Books
+          {author.name} Libri
           {books.length > 0 && (
             <span className="text-lg font-normal text-gray-500 ml-2">
               ({books.length})
@@ -96,7 +95,7 @@ const AuthorDetailpage = () => {
               </svg>
             </div>
             <p className="text-gray-500 text-lg">
-              No books found for this author.
+              Nessun libro per questo autore
             </p>
           </div>
         )}
