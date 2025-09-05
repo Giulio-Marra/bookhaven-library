@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import ArticleCard from "../components/ArticleCard";
 import registerImage from "../assets/Card.png";
+import { getLatestArticles } from "../services/articleService";
 
 const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +16,7 @@ const MainPage = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [articles, setArticles] = useState([]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -46,7 +48,22 @@ const MainPage = () => {
       }
     };
 
+    const fetchRecentArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const recentArticles = await getLatestArticles();
+        setArticles(recentArticles);
+      } catch (error) {
+        setError(error);
+        console.error("Error fetching recent articles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchRecentBooks();
+    fetchRecentArticles();
   }, []);
 
   if (error) {
@@ -163,10 +180,9 @@ const MainPage = () => {
           Rimani aggiornato sugli eventi, orari e comunicazioni della
           biblioteca.
         </p>
-        <ArticleCard />
-        <ArticleCard />
-        <ArticleCard />
-        <ArticleCard />
+        {articles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
       </div>
     </div>
   );

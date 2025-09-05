@@ -82,7 +82,8 @@ public class ArticleService {
         return articleRepository.findTop5ByOrderByUpdatedAtDesc();
     }
 
-    public Page<Article> getArticlesByOptionalFilters(ArticleType type, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+    public Page<Article> getArticlesByFilters(ArticleType type, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        
         LocalDateTime minDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         LocalDateTime maxDate = LocalDateTime.of(3000, 1, 1, 0, 0);
 

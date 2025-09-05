@@ -20,6 +20,9 @@ import AddAuthorPage from "./pages/admin/AddAuthorPage";
 import UpdateAuthorPage from "./pages/admin/UpdateAuthorPage";
 import AddArticlePage from "./pages/admin/AddArticlePage";
 import MainPage from "./pages/MainPage";
+import UpdateArticlePage from "./pages/admin/UpdateArticlePage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
+import ArticlesPage from "./pages/ArticlesPage";
 
 function App() {
   const { getCurrentUser, isLoading, role, error } = useAuth();
@@ -74,10 +77,26 @@ function App() {
           }
         />
         <Route
+          path="/articles"
+          element={
+            <MainLayout>
+              <ArticlesPage />
+            </MainLayout>
+          }
+        />
+        <Route
           path="/book/detail/:id"
           element={
             <MainLayout>
               <BookDetailPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/article/detail/:id"
+          element={
+            <MainLayout>
+              <ArticleDetailPage />
             </MainLayout>
           }
         />
@@ -162,6 +181,16 @@ function App() {
             <AdminRoute role={role}>
               <MainLayout>
                 <UpdateAuthorPage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/update-article/:id"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <UpdateArticlePage />
               </MainLayout>
             </AdminRoute>
           }

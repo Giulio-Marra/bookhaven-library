@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "../assets/Logo.png";
 import { HiMenu, HiX } from "react-icons/hi";
@@ -8,7 +8,8 @@ import { CgProfile } from "react-icons/cg";
 const MyNavbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false); // nuovo stato
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="bg-white text-black px-6 py-3 border-b border-gray-200 font-serif shadow-md fixed top-0 left-0 right-0 z-50">
@@ -23,7 +24,7 @@ const MyNavbar = () => {
             <Link to="/catalog" className="hover:text-blue-300">
               Catalogo
             </Link>
-            <Link to="/event" className="hover:text-blue-300">
+            <Link to="/articles" className="hover:text-blue-300">
               Notizie
             </Link>
             <Link to="/contact" className="hover:text-blue-300">
@@ -71,7 +72,10 @@ const MyNavbar = () => {
                     Dashboard
                   </Link>
                   <button
-                    onClick={logout}
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   >
                     Logout
@@ -82,7 +86,6 @@ const MyNavbar = () => {
           )}
         </div>
 
-        {/* Mobile menu button */}
         <div className="md:hidden flex items-center">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? (
@@ -103,7 +106,7 @@ const MyNavbar = () => {
           <Link to="/catalog" className="block hover:text-blue-300">
             Catalogo
           </Link>
-          <Link to="/event" className="block hover:text-blue-300">
+          <Link to="/articles" className="block hover:text-blue-300">
             Notizie
           </Link>
           <Link to="/contact" className="block hover:text-blue-300">
@@ -137,7 +140,10 @@ const MyNavbar = () => {
                 Dashboard
               </Link>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
                 className="block w-full text-left px-2 py-2 hover:bg-gray-100"
               >
                 Logout

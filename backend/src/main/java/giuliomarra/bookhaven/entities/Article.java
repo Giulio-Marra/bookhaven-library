@@ -12,6 +12,7 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "title", columnDefinition = "VARCHAR")
     private String title;
     private String image;
 

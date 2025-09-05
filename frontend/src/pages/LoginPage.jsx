@@ -31,18 +31,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-tr from-blue-400 via-indigo-500 to-purple-600">
+      <div className="w-full max-w-md bg-white p-10 shadow-xl">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Benvenuto
+          Accedi
         </h2>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Code */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Codice
             </label>
             <input
@@ -51,14 +50,13 @@ const LoginPage = () => {
               value={formData.code}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               placeholder="Inserisci il tuo codice"
+              className="w-full p-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
           </div>
 
-          {/* Password */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Password
             </label>
             <input
@@ -67,47 +65,39 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
               placeholder="Inserisci la password"
+              className="w-full p-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
           </div>
 
-          {/* Remember Me */}
-          <div className="flex items-center justify-between">
-            <label className="flex items-center space-x-2 text-sm text-gray-600">
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleChange}
-                className="w-4 h-4 text-indigo-600 border-gray-300 rounded"
+                className="w-4 h-4 text-indigo-600 border-gray-300"
               />
               <span>Ricordami</span>
             </label>
+
             <a
               href="/forgot-password"
-              className="text-sm text-indigo-600 hover:underline"
+              className="text-indigo-600 hover:underline"
             >
               Password dimenticata?
             </a>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold disabled:opacity-70"
+            className="w-full py-3 bg-blue-400 text-white font-semibold hover:bg-blue-600 transition cursor-pointer"
           >
             {isLoading ? "Accesso in corso..." : "Accedi"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Non hai un account?{" "}
-          <a href="/register" className="text-indigo-600 hover:underline">
-            Registrati
-          </a>
-        </p>
       </div>
     </div>
   );

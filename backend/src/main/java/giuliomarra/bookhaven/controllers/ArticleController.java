@@ -112,7 +112,7 @@ public class ArticleController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return articleService.getArticlesByOptionalFilters(type, start, end, PageRequest.of(page, size));
+        return articleService.getArticlesByFilters(type, start, end, PageRequest.of(page, size));
     }
 
 

@@ -26,7 +26,7 @@ export const addNewArticle = async (articleData, token) => {
 // TROVA ARTICOLO PER ID
 export const getArticleById = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/public/articles/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/articles/public/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -214,9 +214,11 @@ export const getArticlesByFilters = async (
 ) => {
   try {
     const params = new URLSearchParams();
+
     if (type) params.append("type", type);
-    if (startDate) params.append("start", startDate);
-    if (endDate) params.append("end", endDate);
+    if (startDate) params.append("start", new Date(startDate).toISOString());
+    if (endDate) params.append("end", new Date(endDate).toISOString());
+
     params.append("page", page);
     params.append("size", size);
 
