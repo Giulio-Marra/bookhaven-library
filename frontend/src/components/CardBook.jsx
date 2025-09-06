@@ -47,7 +47,7 @@ const CardBook = ({ book }) => {
                 </p>
               ))
             ) : (
-              <p className="text-gray-500 italic">Unknown Author</p>
+              <p className="text-gray-500 italic">Nessun autore</p>
             )
           ) : null}
         </div>

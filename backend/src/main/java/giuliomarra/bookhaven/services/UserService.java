@@ -23,11 +23,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final CardService cardService;
     private final PasswordEncoder bcrypt;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, CardService cardService, PasswordEncoder bcrypt) {
+    public UserService(UserRepository userRepository, CardService cardService, PasswordEncoder bcrypt, EmailService emailService) {
         this.userRepository = userRepository;
         this.cardService = cardService;
         this.bcrypt = bcrypt;
+        this.emailService = emailService;
     }
 
     // ---------------------------
@@ -91,6 +93,7 @@ public class UserService {
 
         userRepository.save(user);
 
+        emailService.sendRegistrationEmail(user.getEmail(), card.getCardNumber(), rawPassword);
         return new RegisterUserInfoDto(
                 card.getCardNumber(),
                 rawPassword,

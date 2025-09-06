@@ -8,6 +8,8 @@ import giuliomarra.bookhaven.repositories.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class CardService {
     @Autowired
@@ -19,8 +21,8 @@ public class CardService {
         }
         Card card = new Card(
                 body.cardNumber(),
-                body.creationDate(),
-                body.expirationDate()
+                LocalDate.now(),
+                LocalDate.now().plusYears(1)
         );
 
         return cardRepository.save(card);
@@ -30,7 +32,7 @@ public class CardService {
         return cardRepository.findById(idCard)
                 .orElseThrow(() -> new EntityNotFoundException("Card with id " + idCard + " not found"));
     }
-    
+
     public Card updateCardExpiration(Long idCard) {
         Card card = findCardById(idCard);
         card.setExpirationDate(card.getExpirationDate().plusYears(1));

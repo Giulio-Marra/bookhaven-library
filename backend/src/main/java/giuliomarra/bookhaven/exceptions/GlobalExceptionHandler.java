@@ -74,4 +74,15 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
     }
+
+    @ExceptionHandler(CantSandEmailException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerCantSand(CantSandEmailException cse, HttpServletRequest request) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                cse.getMessage(),
+                request.getRequestURI()
+        );
+    }
 }

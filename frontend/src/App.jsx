@@ -31,7 +31,13 @@ function App() {
     getCurrentUser();
   }, []);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading)
+    return (
+      <Spinner
+        text="Attendi mentre carichiamo i dati...
+  Se è il primo avvio potrebbe richiedere qualche minuto."
+      />
+    );
 
   return (
     <BrowserRouter>
