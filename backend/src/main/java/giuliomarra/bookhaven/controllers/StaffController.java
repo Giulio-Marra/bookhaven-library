@@ -6,6 +6,7 @@ import giuliomarra.bookhaven.payloads.*;
 import giuliomarra.bookhaven.services.StaffService;
 import giuliomarra.bookhaven.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -85,6 +86,14 @@ public class StaffController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfo);
     }
 
+    @GetMapping("/user/search")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public Page<User> searchUsers(@RequestParam(required = false, defaultValue = "") String query,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        return userService.searchUsers(query, page, size);
+    }
+
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -98,7 +107,7 @@ public class StaffController {
     }
 
     @PreAuthorize("hasAuthority('STAFF')")
-    @PutMapping("/user/{id}")
+    @PutMapping("/user/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserInfoDto dto) {
         User user = userService.findUserById(id);
         return ResponseEntity.ok(userService.updateUserInfo(user, dto));
@@ -124,9 +133,11 @@ public class StaffController {
     }
 
     @PreAuthorize("hasAuthority('STAFF')")
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/user/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+
 }

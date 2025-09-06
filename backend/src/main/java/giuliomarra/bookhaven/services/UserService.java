@@ -11,6 +11,8 @@ import giuliomarra.bookhaven.payloads.NewUserAccountRequiredDto;
 import giuliomarra.bookhaven.payloads.RegisterUserInfoDto;
 import giuliomarra.bookhaven.payloads.UpdateUserInfoDto;
 import giuliomarra.bookhaven.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -107,6 +109,10 @@ public class UserService {
             throw new AlreadyexistsException("User with taxCode " + taxCode + " already exists");
         }
 
+    }
+
+    public Page<User> searchUsers(String search, int page, int size) {
+        return userRepository.searchByEmailOrTaxCodeOrCardNumber(search, PageRequest.of(page, size));
     }
 
     // ---------------------------

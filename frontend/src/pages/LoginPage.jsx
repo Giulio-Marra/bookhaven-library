@@ -26,8 +26,12 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await login(formData.code, formData.password, formData.rememberMe);
-      if (!error) {
+      const success = await login(
+        formData.code,
+        formData.password,
+        formData.rememberMe
+      );
+      if (success) {
         navigate("/");
       }
     } catch (err) {

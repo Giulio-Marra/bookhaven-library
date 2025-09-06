@@ -21,8 +21,11 @@ export const loginUser = (code, password, rememberMe) => async (dispatch) => {
 
     const user = await getCurrentUser(token);
     dispatch(setUser(user));
+
+    return true;
   } catch (err) {
     dispatch(setError(err.message));
+    return false;
   } finally {
     dispatch(setLoading(false));
   }

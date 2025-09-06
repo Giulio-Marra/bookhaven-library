@@ -17,7 +17,7 @@ const DashBoardMenu = ({ selectedMenu, setSelectedMenu }) => {
   ];
 
   return (
-    <div className="  ">
+    <div className="md:sticky md:top-6 md:max-h-[90vh] md:overflow-y-auto">
       <h1 className="hidden md:block text-xl font-bold mb-4 text-gray-800 px-4 mt-2">
         School Library Staff Panel
       </h1>
@@ -28,11 +28,11 @@ const DashBoardMenu = ({ selectedMenu, setSelectedMenu }) => {
             key={item.label}
             onClick={() => handleMenuClick(item.label)}
             className={`flex items-center gap-2 md:gap-3 p-3 cursor-pointer transition whitespace-nowrap
-            ${
-              selectedMenu === item.label
-                ? "bg-blue-100 text-blue-700 font-semibold shadow-sm"
-                : "hover:bg-gray-200 text-gray-700"
-            }`}
+          ${
+            selectedMenu === item.label
+              ? "bg-blue-100 text-blue-700 font-semibold shadow-sm"
+              : "hover:bg-gray-200 text-gray-700"
+          }`}
           >
             {item.icon}
             <p>{item.label}</p>

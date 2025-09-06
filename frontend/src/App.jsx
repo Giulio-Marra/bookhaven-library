@@ -8,7 +8,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import CatalogPage from "./pages/CatalogPage";
 import BookDetailPage from "./pages/BookDetailPage";
-import AddNewBookTest from "./pages/AddNewBookTest";
+
 import AdminPage from "./pages/admin/AdminPage";
 import AdminRoute from "./pages/admin/AdminRoute";
 import AddBooksPage from "./pages/admin/AddBooksPage";
@@ -23,6 +23,8 @@ import MainPage from "./pages/MainPage";
 import UpdateArticlePage from "./pages/admin/UpdateArticlePage";
 import ArticleDetailPage from "./pages/ArticleDetailPage";
 import ArticlesPage from "./pages/ArticlesPage";
+import AddUserPage from "./pages/admin/AddUserPage";
+import UpdateUserPage from "./pages/admin/UpdateUserPage";
 
 function App() {
   const { getCurrentUser, isLoading, role } = useAuth();
@@ -98,14 +100,7 @@ function App() {
             </MainLayout>
           }
         />
-        <Route
-          path="/book/add"
-          element={
-            <MainLayout>
-              <AddNewBookTest />
-            </MainLayout>
-          }
-        />
+
         <Route
           path="/contact"
           element={
@@ -155,6 +150,16 @@ function App() {
           }
         />
         <Route
+          path="/admin/add-user"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <AddUserPage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
           path="/admin/update-book/:id"
           element={
             <AdminRoute role={role}>
@@ -181,6 +186,16 @@ function App() {
             <AdminRoute role={role}>
               <MainLayout>
                 <UpdateArticlePage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/update-user/:id"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <UpdateUserPage />
               </MainLayout>
             </AdminRoute>
           }
