@@ -57,14 +57,16 @@ export const addUser = async (userData, token) => {
       },
       body: JSON.stringify(userData),
     });
-
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error("Failed to create user");
+      const errorMessage =
+        data?.message || "Errore durante la creazione dell'utente";
+      throw new Error(errorMessage);
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error(error.message);
     throw error;
   }
 };

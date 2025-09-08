@@ -10,7 +10,9 @@ import giuliomarra.bookhaven.exceptions.BookNotAvailableException;
 import giuliomarra.bookhaven.exceptions.CardExpiredException;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
 import giuliomarra.bookhaven.payloads.BookReservationResponseDto;
+import giuliomarra.bookhaven.payloads.CardReservationDto;
 import giuliomarra.bookhaven.payloads.PendingReservationDto;
+import giuliomarra.bookhaven.payloads.UserReservationDto;
 import giuliomarra.bookhaven.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,6 +55,7 @@ public class ReservationService {
         reservation.setBook(book);
         reservation.setUser(user);
         reservation.setStatus(ReservationStatus.PENDING);
+        reservation.setReservationDate(LocalDate.now());
 
         reservationRepository.save(reservation);
 
@@ -97,6 +100,20 @@ public class ReservationService {
                 reservationRepository.save(reservation);
                 break;
         }
+    }
+
+    public Page<UserReservationDto> getReservationsForUser(Long userId, Pageable pageable) {
+        return reservationRepository.findReservationsByUserId(userId, pageable);
+    }
+
+    public Page<CardReservationDto> getReservationsByCardStatusAndExpired(
+            String cardNumber,
+            ReservationStatus status,
+            Boolean expired,
+            Pageable pageable
+    ) {
+        if (cardNumber != null && cardNumber.isBlank()) cardNumber = null;
+        return reservationRepository.findFilteredReservations(cardNumber, status, expired, pageable);
     }
 
 

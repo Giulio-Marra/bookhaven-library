@@ -25,6 +25,7 @@ import ArticleDetailPage from "./pages/ArticleDetailPage";
 import ArticlesPage from "./pages/ArticlesPage";
 import AddUserPage from "./pages/admin/AddUserPage";
 import UpdateUserPage from "./pages/admin/UpdateUserPage";
+import DashBoardPage from "./pages/DashBoardPage";
 
 function App() {
   const { getCurrentUser, isLoading, role } = useAuth();
@@ -57,6 +58,14 @@ function App() {
           element={
             <MainLayout>
               <MainPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <MainLayout>
+              <DashBoardPage />
             </MainLayout>
           }
         />

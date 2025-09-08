@@ -37,7 +37,7 @@ export const getCurrentUser = async (token) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+    const response = await fetch(`${API_BASE_URL}/api/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

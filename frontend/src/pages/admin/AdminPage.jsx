@@ -6,6 +6,7 @@ import ArticleStaffCatalog from "../../components/componentsStaff/ArticleStaffCa
 import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "../../redux/actions/menuActions";
 import UserStaffManage from "../../components/componentsStaff/UserStaffManage";
+import ReservationsStaffCatalog from "../../components/componentsStaff/ReservationStaffCatalog";
 
 const AdminPage = () => {
   const selectedMenu = useSelector((state) => state.menu.menu);
@@ -24,6 +25,9 @@ const AdminPage = () => {
       break;
     case "Utenti":
       content = <UserStaffManage />;
+      break;
+    case "Prenotazioni":
+      content = <ReservationsStaffCatalog />;
       break;
 
     default:

@@ -3,6 +3,9 @@ import { getBookById } from "../services/bookService";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { useAuth } from "../hooks/useAuth";
+import { reservationBook } from "../services/reservationService";
+import ConfirmReservationModal from "../components/ConfirmReservationModal";
+import SuccessReservationModal from "../components/SuccessReservationModal";
 
 const BookDetailPage = () => {
   const [book, setBook] = useState(null);
@@ -10,32 +13,73 @@ const BookDetailPage = () => {
   const [error, setError] = useState(null);
   const { id: bookId } = useParams();
   const { user } = useAuth();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const token =
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadBook = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getBookById(bookId);
-        setBook(data);
-      } catch (err) {
-        setError(err.message || "Error loading book");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // funzione per caricare libro
+  const loadBook = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getBookById(bookId);
+      setBook(data);
+    } catch (err) {
+      setError(err.message || "Errore durante il caricamento del libro");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadBook();
   }, [bookId]);
+
+  // mostra modale di conferma
+  const handleReservation = () => {
+    if (!user) {
+      alert("Devi essere loggato per prenotare un libro.");
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
+  // conferma prenotazione
+  const confirmReservation = async () => {
+    setShowConfirmModal(false);
+    setLoading(true);
+
+    try {
+      await reservationBook(bookId, token);
+      setShowSuccessModal(true);
+    } catch (error) {
+      let errorMessage = "Errore durante la prenotazione.";
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // chiusura modale successo + refresh libro
+  const handleCloseModal = async () => {
+    setShowSuccessModal(false);
+    await loadBook();
+  };
 
   if (loading) return <Spinner />;
   if (error) return <p className="text-red-600 text-center mt-20">{error}</p>;
   if (!book)
-    return <p className="text-gray-600 text-center mt-20">Book not found</p>;
+    return <p className="text-gray-600 text-center mt-20">Libro non trovato</p>;
 
   const statusColors = {
     AVAILABLE: "bg-green-50 text-green-700 border border-green-200",
+    BOOKED: "bg-blue-50 text-blue-700 border border-blue-200",
     BORROWED: "bg-yellow-50 text-yellow-700 border border-yellow-200",
     UNAVAILABLE: "bg-red-50 text-red-700 border border-red-200",
   };
@@ -55,6 +99,7 @@ const BookDetailPage = () => {
         <div className="flex-1 space-y-2">
           {/* Titolo */}
           <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
+
           {/* Autori */}
           <div className="space-y-2">
             <p className="text-sm font-medium text-gray-500">Autori</p>
@@ -80,8 +125,8 @@ const BookDetailPage = () => {
             {book.description}
           </p>
 
-          {/* Status */}
-          <div className="">
+          {/* Status + bottone prenotazione */}
+          <div>
             <span
               className={`inline-block px-4 py-2 text-sm font-medium rounded-md ${
                 statusColors[book.status] ||
@@ -91,7 +136,15 @@ const BookDetailPage = () => {
               {book.status}
             </span>
             {user ? (
-              <button className="ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-400 border border-transparent cursor-pointer shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              <button
+                disabled={book.status !== "AVAILABLE"}
+                className={`ml-4 mt-4 inline-flex items-center px-4 py-2 text-sm font-medium text-white ${
+                  book.status === "AVAILABLE"
+                    ? "bg-blue-400 hover:bg-blue-600 cursor-pointer"
+                    : "bg-gray-400 cursor-not-allowed"
+                } border border-transparent shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                onClick={handleReservation}
+              >
                 Prenota Libro
               </button>
             ) : (
@@ -155,6 +208,17 @@ const BookDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modali */}
+      {showConfirmModal && (
+        <ConfirmReservationModal
+          onConfirm={confirmReservation}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
+      {showSuccessModal && (
+        <SuccessReservationModal onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

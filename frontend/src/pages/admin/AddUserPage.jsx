@@ -75,14 +75,13 @@ const AddUserPage = () => {
       });
     } catch (err) {
       console.error(err);
-      setError("Errore durante la creazione dell'utente");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) return <Spinner />;
-  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="flex justify-center py-10 px-4 min-h-screen mt-15">
@@ -97,10 +96,13 @@ const AddUserPage = () => {
         >
           Torna indietro
         </button>
-
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Registra Nuovo Utente
         </h1>
+
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
