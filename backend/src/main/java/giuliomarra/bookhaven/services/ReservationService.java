@@ -90,6 +90,7 @@ public class ReservationService {
                 break;
             case RETURNED:
                 bookService.updateBookStatus(reservation.getBook().getId(), BookStatus.AVAILABLE);
+                reservation.setReturnDate(LocalDate.now());
                 reservationRepository.save(reservation);
                 break;
             case DECLINED:

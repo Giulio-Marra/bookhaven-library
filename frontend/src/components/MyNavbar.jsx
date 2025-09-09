@@ -64,13 +64,15 @@ const MyNavbar = () => {
               </button>
               {profileMenuOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 shadow-md rounded-md z-50 cursor-pointer">
-                  <Link
-                    to="/dashboard"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setProfileMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
+                  {user?.role === "USER" && (
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       logout();
@@ -131,7 +133,7 @@ const MyNavbar = () => {
             </Link>
           )}
 
-          {isAuthenticated && (
+          {isAuthenticated && user?.role === "STAFF" && (
             <div className="border-t border-gray-200 pt-2">
               <Link
                 to="/dashboard"

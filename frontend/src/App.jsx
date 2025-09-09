@@ -26,6 +26,7 @@ import ArticlesPage from "./pages/ArticlesPage";
 import AddUserPage from "./pages/admin/AddUserPage";
 import UpdateUserPage from "./pages/admin/UpdateUserPage";
 import DashBoardPage from "./pages/DashBoardPage";
+import UpdateReservation from "./pages/admin/UpdateReservation";
 
 function App() {
   const { getCurrentUser, isLoading, role } = useAuth();
@@ -205,6 +206,16 @@ function App() {
             <AdminRoute role={role}>
               <MainLayout>
                 <UpdateUserPage />
+              </MainLayout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/update-reservation/:id"
+          element={
+            <AdminRoute role={role}>
+              <MainLayout>
+                <UpdateReservation />
               </MainLayout>
             </AdminRoute>
           }

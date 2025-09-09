@@ -75,3 +75,47 @@ export const getFilteredReservations = async (
     throw error;
   }
 };
+
+export const getReservationById = async (id, token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/reservation/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData?.message || "Failed to fetch reservation");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching reservation:", error);
+    throw error;
+  }
+};
+
+export const updateReservationStatus = async (id, status, token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/reservation/${id}/status?status=${status}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Failed to update reservation status"
+      );
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error updating reservation status:", error);
+    throw error;
+  }
+};

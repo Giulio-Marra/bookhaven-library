@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getFilteredReservations } from "../../services/reservationService";
 import Spinner from "../Spinner";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const ReservationsStaffCatalog = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -175,7 +176,7 @@ const ReservationsStaffCatalog = () => {
             <div className="flex gap-2">
               <button
                 className="text-blue-500 hover:text-blue-700 font-medium transition"
-                onClick={() => Navigate(`/admin/update-book/${res.id}`)}
+                onClick={() => navigate(`/admin/update-reservation/${res.id}`)}
               >
                 Visualizza/Aggiorna
               </button>
