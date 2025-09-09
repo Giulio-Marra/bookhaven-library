@@ -11,17 +11,26 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository per gestire i libri (Book).
+ */
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
+
+    // Controlla se esiste un libro con un determinato ISBN
     boolean existsByIsbn(String isbn);
 
+    // Restituisce un libro per ISBN
     Optional<Book> findByIsbn(String isbn);
 
+    // Cerca libri che contengono una certa categoria (case insensitive)
     List<Book> findByCategoriesContainingIgnoreCase(String category);
 
+    // Trova libri associati a un autore tramite la tabella di associazione
     @Query("SELECT ba.book FROM BookAuthor ba WHERE ba.author.id = :authorId")
     List<Book> findBooksByAuthorId(@Param("authorId") Long authorId);
 
+    // Ricerca avanzata con filtri su titolo, autore o categoria, paginata
     @Query("""
             SELECT DISTINCT b
             FROM Book b
@@ -36,10 +45,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> searchBooksByTitleAuthorOrCategory(
             @Param("searchTerm") String searchTerm,
             @Param("category") String category,
-            Pageable pageable);
+            Pageable pageable
+    );
 
-
+    // Restituisce gli ultimi 6 libri aggiunti
     List<Book> findTop6ByOrderByAddingDateDesc();
-
-
 }

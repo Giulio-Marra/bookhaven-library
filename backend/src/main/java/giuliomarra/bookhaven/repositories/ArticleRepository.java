@@ -12,20 +12,26 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repository per gestire le operazioni sul database relative agli articoli (Article).
+ * Estende JpaRepository, quindi eredita tutti i metodi CRUD.
+ */
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    // Articoli in ordine crescente per data aggiornamento
+
+    // Restituisce tutti gli articoli ordinati per data di aggiornamento in ordine crescente, paginati
     Page<Article> findAllByOrderByUpdatedAtAsc(Pageable pageable);
 
-    // Articoli in ordine decrescente per data aggiornamento
+    // Restituisce tutti gli articoli ordinati per data di aggiornamento in ordine decrescente, paginati
     Page<Article> findAllByOrderByUpdatedAtDesc(Pageable pageable);
 
-    // Articoli in un intervallo di date aggiornati (crescente)
+    // Restituisce articoli aggiornati in un intervallo di date, ordinati in modo crescente
     Page<Article> findByUpdatedAtBetweenOrderByUpdatedAtAsc(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    // Ultimi 5 articoli aggiornati
+    // Restituisce i 5 articoli più recenti
     List<Article> findTop5ByOrderByUpdatedAtDesc();
 
+    // Query personalizzata con filtri opzionali su tipo articolo e range di creazione
     @Query("""
             SELECT a FROM Article a
             WHERE (:type IS NULL OR a.articleType = :type)
@@ -38,6 +44,4 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             @Param("end") LocalDateTime end,
             Pageable pageable
     );
-
-
 }

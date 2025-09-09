@@ -78,7 +78,7 @@ public class UserService {
         validateUserUniqueness(body.email(), body.taxCode());
 
         Card card = cardService.addNewCard(body.card());
-        String rawPassword = generateRandomPassword(8);
+        String rawPassword = generateRandomPassword(12);
 
         User user = new User(
                 body.name(),

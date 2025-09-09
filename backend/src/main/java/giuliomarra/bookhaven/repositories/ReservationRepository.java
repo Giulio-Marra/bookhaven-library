@@ -11,8 +11,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Repository per gestire le prenotazioni (Reservation).
+ */
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+    // Restituisce prenotazioni filtrate per stato e numero carta, con DTO personalizzato
     @Query("""
                 SELECT new giuliomarra.bookhaven.payloads.PendingReservationDto(
                     r.id,
@@ -30,8 +34,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Page<PendingReservationDto> findReservationsByFilters(
             @Param("status") ReservationStatus status,
             @Param("cardNumber") String cardNumber,
-            Pageable pageable);
+            Pageable pageable
+    );
 
+    // Restituisce prenotazioni di un utente specifico, ordinate per data, con DTO personalizzato
     @Query("""
                 SELECT new giuliomarra.bookhaven.payloads.UserReservationDto(
                     r.id,
@@ -50,6 +56,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             Pageable pageable
     );
 
+    // Prenotazioni filtrate per numero carta, stato e se scadute, con DTO personalizzato
     @Query("""
                 SELECT new giuliomarra.bookhaven.payloads.CardReservationDto(
                     r.id,
@@ -71,6 +78,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("expired") Boolean expired,
             Pageable pageable
     );
-
-
 }

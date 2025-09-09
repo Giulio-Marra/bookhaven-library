@@ -30,7 +30,7 @@ public class JwtTool {
             Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parse(token);
 
         } catch (Exception ex) {
-            throw new AuthenticationException("Problem with token, try to relog");
+            throw new AuthenticationException("Problema col token, prova a riloggare");
         }
     }
 
