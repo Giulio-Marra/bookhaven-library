@@ -14,7 +14,6 @@ const MyNavbar = () => {
   return (
     <nav className="bg-white text-black px-6 py-3 border-b border-gray-200 font-serif shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Logo + Links */}
         <div className="flex items-center space-x-8">
           <img src={Logo} alt="Logo" className="h-10" />
           <div className="hidden md:flex space-x-6">
@@ -33,16 +32,16 @@ const MyNavbar = () => {
           </div>
         </div>
 
-        {/* Desktop auth buttons */}
         <div className="hidden md:flex items-center space-x-4 relative">
-          {isAuthenticated && user?.role === "STAFF" && (
-            <Link
-              to="/admin"
-              className="hover:bg-blue-600 bg-blue-400 p-2 text-white px-4 "
-            >
-              Admin Panel
-            </Link>
-          )}
+          {isAuthenticated &&
+            (user?.role === "STAFF" || user?.role === "DEMO") && (
+              <Link
+                to="/admin"
+                className="hover:bg-blue-600 bg-blue-400 p-2 text-white px-4"
+              >
+                Admin Panel
+              </Link>
+            )}
 
           {!isAuthenticated && (
             <Link
@@ -115,14 +114,15 @@ const MyNavbar = () => {
             Contatti
           </Link>
 
-          {isAuthenticated && user?.role === "STAFF" && (
-            <Link
-              to="/admin"
-              className="block hover:bg-blue-600 bg-blue-400 p-2 text-white rounded-md"
-            >
-              Admin Panel
-            </Link>
-          )}
+          {isAuthenticated &&
+            (user?.role === "STAFF" || user?.role === "DEMO") && (
+              <Link
+                to="/admin"
+                className="hover:bg-blue-600 bg-blue-400 p-2 text-white px-4"
+              >
+                Admin Panel
+              </Link>
+            )}
 
           {!isAuthenticated && (
             <Link

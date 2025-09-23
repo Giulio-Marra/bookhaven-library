@@ -108,7 +108,6 @@ const ReservationsStaffCatalog = () => {
     <div className="w-full space-y-4">
       <h1 className="text-2xl font-bold">Gestione Prenotazioni</h1>
 
-      {/* Filtri */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <input
           className="p-3 bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-500"
@@ -139,7 +138,6 @@ const ReservationsStaffCatalog = () => {
         </label>
       </div>
 
-      {/* Intestazione tabella */}
       <div className="grid grid-cols-7 gap-4 bg-gray-100 p-3 font-semibold border border-gray-300">
         <p>ISBN</p>
         <p>Codice Tessera</p>
@@ -150,7 +148,6 @@ const ReservationsStaffCatalog = () => {
         <p>Azioni</p>
       </div>
 
-      {/* Contenuto */}
       {loading ? (
         <Spinner />
       ) : error ? (

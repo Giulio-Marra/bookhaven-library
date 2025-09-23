@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getArticlesDesc,
   deleteArticle,
-  getArticlesByFilters, // Assicurati di creare questa funzione nel service
+  getArticlesByFilters,
 } from "../../services/articleService";
 import Spinner from "../Spinner";
 import ConfirmModal from "./ConfirmModal";

@@ -9,6 +9,7 @@ import giuliomarra.bookhaven.enums.ReservationStatus;
 import giuliomarra.bookhaven.exceptions.BookNotAvailableException;
 import giuliomarra.bookhaven.exceptions.CardExpiredException;
 import giuliomarra.bookhaven.exceptions.EntityNotFoundException;
+import giuliomarra.bookhaven.exceptions.RoleNotSupportedException;
 import giuliomarra.bookhaven.payloads.BookReservationResponseDto;
 import giuliomarra.bookhaven.payloads.CardReservationDto;
 import giuliomarra.bookhaven.payloads.PendingReservationDto;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 
 @Service
 public class ReservationService {
+
     @Autowired
     private ReservationRepository reservationRepository;
 
@@ -33,16 +35,22 @@ public class ReservationService {
     @Autowired
     private UserService userService;
 
+    // trova una prenotazione per id o lancia eccezione se non trovata
     public Reservation findById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
     }
 
+    // crea una nuova prenotazione per un libro da parte di un utente
     public BookReservationResponseDto reservationBook(Long idBook, User user) {
         Book book = bookService.findById(idBook);
 
         if (book.getStatus() != BookStatus.AVAILABLE) {
             throw new BookNotAvailableException("Book with id " + idBook + " is not available for reservation.");
+        }
+
+        if (user == null) {
+            throw new RoleNotSupportedException("User not found or role not supported");
         }
 
         Card card = user.getCard();
@@ -69,14 +77,15 @@ public class ReservationService {
                 user.getTaxCode(),
                 card.getCardNumber()
         );
-
     }
 
+    // ottiene prenotazioni filtrate per stato e numero tessera, paginato
     public Page<PendingReservationDto> getReservations(ReservationStatus status, String cardNumber, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return reservationRepository.findReservationsByFilters(status, cardNumber, pageable);
     }
 
+    // aggiorna lo stato di una prenotazione e applica regole su date e libri
     public void updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
         Reservation reservation = findById(reservationId);
 
@@ -103,10 +112,12 @@ public class ReservationService {
         }
     }
 
+    // ottiene prenotazioni per uno specifico utente, paginato
     public Page<UserReservationDto> getReservationsForUser(Long userId, Pageable pageable) {
         return reservationRepository.findReservationsByUserId(userId, pageable);
     }
 
+    // ottiene prenotazioni filtrate per numero tessera, stato e se scadute, paginato
     public Page<CardReservationDto> getReservationsByCardStatusAndExpired(
             String cardNumber,
             ReservationStatus status,
@@ -116,6 +127,4 @@ public class ReservationService {
         if (cardNumber != null && cardNumber.isBlank()) cardNumber = null;
         return reservationRepository.findFilteredReservations(cardNumber, status, expired, pageable);
     }
-
-
 }

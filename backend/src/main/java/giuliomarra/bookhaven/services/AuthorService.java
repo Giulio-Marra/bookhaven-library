@@ -26,15 +26,18 @@ public class AuthorService {
         this.bookAuthorsRepository = bookAuthorsRepository;
     }
 
+    // Restituisce un autore tramite ID o lancia eccezione se non trovato
     public Author findAuthorById(Long authorId) {
         return authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with this id " + authorId + " not found"));
     }
 
+    // Restituisce tutti gli autori
     public List<Author> findAllAuthors() {
         return authorRepository.findAll();
     }
 
+    // Aggiunge un nuovo autore; lancia eccezione se esiste già un autore con lo stesso nome
     public Author addNewAuthor(NewAuthorRequiredDto body) {
         if (authorRepository.existsByName(body.name())) {
             throw new AlreadyexistsException("Author " + body.name() + " already exists");
@@ -52,6 +55,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    // Aggiorna un autore esistente; controlla che il nome non sia già presente in un altro autore
     public Author updateAuthor(Long id, NewAuthorRequiredDto body) {
         Author author = findAuthorById(id);
 
@@ -69,6 +73,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    // Rimuove un autore e tutte le associazioni con i libri
     @Transactional
     public RemoveEntityResponseDto removeAuthor(Long id) {
         Author author = findAuthorById(id);
@@ -81,21 +86,21 @@ public class AuthorService {
         );
     }
 
-
+    // Restituisce gli autori associati a un libro tramite bookId
     public List<Author> getAuthorsByBookId(Long bookId) {
         return authorRepository.findAuthorsByBookId(bookId);
     }
 
+    // Restituisce tutti i nomi e ID degli autori
     public List<ListAuthorNameAndIdDto> getAllAuthorsNamesAndIds() {
         return authorRepository.findAllNamesAndIds();
     }
 
-
+    // Cerca autori per nome con paginazione; se il nome è vuoto restituisce tutti
     public Page<Author> searchAuthorsByName(String name, Pageable pageable) {
         if (name == null || name.trim().isEmpty()) {
             return authorRepository.findAll(pageable);
         }
         return authorRepository.findByNameContainingIgnoreCase(name, pageable);
     }
-
 }

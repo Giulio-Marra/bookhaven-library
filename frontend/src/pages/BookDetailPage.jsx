@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { getBookById } from "../services/bookService";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
@@ -20,7 +20,6 @@ const BookDetailPage = () => {
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const navigate = useNavigate();
 
-  // funzione per caricare libro
   const loadBook = async () => {
     setLoading(true);
     setError(null);
@@ -38,7 +37,6 @@ const BookDetailPage = () => {
     loadBook();
   }, [bookId]);
 
-  // mostra modale di conferma
   const handleReservation = () => {
     if (!user) {
       alert("Devi essere loggato per prenotare un libro.");
@@ -47,7 +45,6 @@ const BookDetailPage = () => {
     setShowConfirmModal(true);
   };
 
-  // conferma prenotazione
   const confirmReservation = async () => {
     setShowConfirmModal(false);
     setLoading(true);
@@ -57,16 +54,16 @@ const BookDetailPage = () => {
       setShowSuccessModal(true);
     } catch (error) {
       let errorMessage = "Errore durante la prenotazione.";
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
+      if (user && user.role === "DEMO") {
+        errorMessage += " Gli utenti demo non possono prenotare libri.";
       }
+
       alert(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // chiusura modale successo + refresh libro
   const handleCloseModal = async () => {
     setShowSuccessModal(false);
     await loadBook();
@@ -86,7 +83,6 @@ const BookDetailPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 mt-16">
-      {/* Titolo e descrizione */}
       <h1 className="mb-6 text-gray-400">
         Books / <span className="text-black font-bold">{book.title}</span>
       </h1>
@@ -97,10 +93,8 @@ const BookDetailPage = () => {
           className="w-52 h-80 object-cover rounded-lg shadow-sm border border-gray-100"
         />
         <div className="flex-1 space-y-2">
-          {/* Titolo */}
           <h1 className="text-4xl font-bold text-gray-900">{book.title}</h1>
 
-          {/* Autori */}
           <div className="space-y-2">
             <p className="text-sm font-medium text-gray-500">Autori</p>
             <div className="flex flex-wrap gap-2">
@@ -120,12 +114,10 @@ const BookDetailPage = () => {
             </div>
           </div>
 
-          {/* Descrizione */}
           <p className="text-gray-600 text-lg leading-relaxed">
             {book.description}
           </p>
 
-          {/* Status + bottone prenotazione */}
           <div>
             <span
               className={`inline-block px-4 py-2 text-sm font-medium rounded-md ${
@@ -161,7 +153,6 @@ const BookDetailPage = () => {
         </div>
       </div>
 
-      {/* Dettagli libro */}
       <div className="bg-white border border-gray-200 rounded-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">
           Dettagli:
@@ -209,7 +200,6 @@ const BookDetailPage = () => {
         </div>
       </div>
 
-      {/* Modali */}
       {showConfirmModal && (
         <ConfirmReservationModal
           onConfirm={confirmReservation}

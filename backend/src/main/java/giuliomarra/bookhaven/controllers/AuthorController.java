@@ -26,7 +26,7 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    // SOLO STAFF
+    // Aggiunge un nuovo autore
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
     public ResponseEntity<Author> addAuthor(@Valid @RequestBody NewAuthorRequiredDto body) {
@@ -34,39 +34,41 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(author);
     }
 
-    // VISIBILE A TUTTI
+    // Recupera autore per ID
     @GetMapping("/public/{id}")
     public ResponseEntity<Author> getAuthor(@PathVariable Long id) {
         return ResponseEntity.ok(authorService.findAuthorById(id));
     }
 
-    // VISIBILE A TUTTI
+    // Recupera tutti gli autori
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/all")
     public ResponseEntity<List<Author>> getAllAuthors() {
         return ResponseEntity.ok(authorService.findAllAuthors());
     }
 
-    // SOLO STAFF
+    // Aggiorna autore esistente
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @Valid @RequestBody NewAuthorRequiredDto body) {
         return ResponseEntity.ok(authorService.updateAuthor(id, body));
     }
 
-    // SOLO STAFF
+    // Rimuove autore
     @PreAuthorize("hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<RemoveEntityResponseDto> deleteAuthor(@PathVariable Long id) {
         return ResponseEntity.ok(authorService.removeAuthor(id));
     }
 
+    // Recupera nomi e ID di tutti gli autori
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/names")
     public ResponseEntity<List<ListAuthorNameAndIdDto>> getAllAuthorsNamesAndIds() {
         return ResponseEntity.ok(authorService.getAllAuthorsNamesAndIds());
     }
-    
+
+    // Cerca autori per nome
     @GetMapping("/public/search")
     public ResponseEntity<Page<Author>> searchAuthors(
             @RequestParam String name,
@@ -78,4 +80,3 @@ public class AuthorController {
     }
 
 }
-

@@ -12,7 +12,6 @@ const CardBook = ({ book }) => {
 
   return (
     <div className="flex flex-col bg-white  shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      {/* Image */}
       <div
         className="w-full h-64 md:h-72 lg:h-80 bg-gray-100 flex items-center justify-center cursor-pointer"
         onClick={goBookDetailPage}
@@ -24,7 +23,6 @@ const CardBook = ({ book }) => {
         />
       </div>
 
-      {/* Content */}
       <div className="flex flex-col p-4 flex-1">
         <h3
           className="text-lg font-semibold text-gray-900 mb-2 cursor-pointer hover:text-blue-600 truncate"

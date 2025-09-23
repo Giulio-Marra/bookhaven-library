@@ -18,7 +18,7 @@ public class EmailService {
     @Value("${sendgrid.sender.email}")
     private String senderEmail;
 
-
+    // invia l'email di registrazione all'utente con numero tessera e password temporanea
     public void sendRegistrationEmail(String to, String cardNumber, String rawPassword) {
         try {
             Email from = new Email(senderEmail);

@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/reservation")
 public class ReservationController {
+
     private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
+    // Prenota un libro per l'utente loggato
     @PostMapping("/{id}")
     public ResponseEntity<BookReservationResponseDto> reservationBook(
             @PathVariable Long id,
@@ -32,6 +34,7 @@ public class ReservationController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // Recupera tutte le prenotazioni di un utente
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<UserReservationDto>> getReservationsByUserId(
@@ -45,6 +48,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
+    // Recupera le prenotazioni dell'utente loggato
     @GetMapping("/me")
     public ResponseEntity<Page<UserReservationDto>> getMyReservations(
             @AuthenticationPrincipal User user,
@@ -57,6 +61,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
+    // Recupera prenotazioni filtrate per card, status o scadenza
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/filter")
     public Page<CardReservationDto> getFilteredReservations(
@@ -74,6 +79,7 @@ public class ReservationController {
         );
     }
 
+    // Aggiorna lo status di una prenotazione
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateReservationStatus(
@@ -84,12 +90,11 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    // Recupera prenotazione per ID
     @PreAuthorize("hasAuthority('STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         Reservation reservation = reservationService.findById(id);
         return ResponseEntity.ok(reservation);
     }
-
-
 }

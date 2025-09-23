@@ -16,10 +16,14 @@ export const getUsers = async (searchItem, page, size, token) => {
       }
     );
 
-    if (!response.ok) throw new Error("Failed to fetch users");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Errore durante il recupero degli utenti"
+      );
+    }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
@@ -38,7 +42,12 @@ export const deleteUser = async (userId, token) => {
       }
     );
 
-    if (!response.ok) throw new Error("Failed to delete user");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Errore durante l'eliminazione dell'utente"
+      );
+    }
 
     return true;
   } catch (error) {
@@ -57,16 +66,18 @@ export const addUser = async (userData, token) => {
       },
       body: JSON.stringify(userData),
     });
+
     const data = await response.json();
+
     if (!response.ok) {
-      const errorMessage =
-        data?.message || "Errore durante la creazione dell'utente";
-      throw new Error(errorMessage);
+      throw new Error(
+        data?.message || "Errore durante la creazione dell'utente"
+      );
     }
 
-    return await response.json();
+    return data;
   } catch (error) {
-    console.error(error.message);
+    console.error("Error adding user:", error);
     throw error;
   }
 };
@@ -78,15 +89,21 @@ export const getUserById = async (userId, token) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (!response.ok) {
-      throw new Error("Failed to fetch user");
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Errore durante il recupero dell'utente"
+      );
     }
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching user:", error);
     throw error;
   }
 };
+
 export const updateUser = async (userId, userData, token) => {
   try {
     const response = await fetch(
@@ -102,7 +119,10 @@ export const updateUser = async (userId, userData, token) => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to update user");
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Errore durante l'aggiornamento dell'utente"
+      );
     }
 
     return await response.json();

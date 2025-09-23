@@ -21,13 +21,13 @@ public class ArticleService {
         this.articleRepository = articleRepository;
     }
 
-    // TROVA ARTICOLO PER ID
+    // Restituisce un articolo tramite ID o lancia eccezione se non trovato
     public Article findById(Long id) {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Article with id " + id + " not found"));
     }
 
-    // CREA NUOVO ARTICOLO
+    // Crea un nuovo articolo con autore e immagine casuale
     public Article addNewArticle(NewArticleRequiredDto body, Staff articleAuthor) {
         String randomImageUrl = "https://picsum.photos/1200/600";
 
@@ -44,7 +44,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    // AGGIORNA ARTICOLO
+    // Aggiorna un articolo esistente
     public Article updateArticle(Long id, NewArticleRequiredDto body) {
         Article article = findById(id);
 
@@ -56,34 +56,34 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    // CANCELLA ARTICOLO
+    // Cancella un articolo tramite ID
     public void deleteArticle(Long id) {
         Article article = findById(id);
         articleRepository.delete(article);
     }
 
-    // RECUPERA ARTICOLI CON PAGINAZIONE E FILTRO PER INTERVALLO DI DATE
+    // Recupera articoli aggiornati in un intervallo di date con paginazione
     public Page<Article> getArticlesByUpdatedAtRange(LocalDateTime start, LocalDateTime end, Pageable pageable) {
         return articleRepository.findByUpdatedAtBetweenOrderByUpdatedAtAsc(start, end, pageable);
     }
 
-    // RECUPERA TUTTI GLI ARTICOLI IN ORDINE CRESCENTE PER UPDATED AT
+    // Recupera tutti gli articoli ordinati per data di aggiornamento crescente
     public Page<Article> getAllArticlesOrderByUpdatedAsc(Pageable pageable) {
         return articleRepository.findAllByOrderByUpdatedAtAsc(pageable);
     }
 
-    // RECUPERA TUTTI GLI ARTICOLI IN ORDINE DECRESCENTE PER UPDATED AT
+    // Recupera tutti gli articoli ordinati per data di aggiornamento decrescente
     public Page<Article> getAllArticlesOrderByUpdatedDesc(Pageable pageable) {
         return articleRepository.findAllByOrderByUpdatedAtDesc(pageable);
     }
 
-    // RECUPERA GLI ULTIMI 5 ARTICOLI AGGIORNATI
+    // Recupera gli ultimi 5 articoli aggiornati
     public List<Article> getLast5UpdatedArticles() {
         return articleRepository.findTop5ByOrderByUpdatedAtDesc();
     }
 
+    // Recupera articoli filtrati per tipo e intervallo di date opzionali
     public Page<Article> getArticlesByFilters(ArticleType type, LocalDateTime start, LocalDateTime end, Pageable pageable) {
-        
         LocalDateTime minDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         LocalDateTime maxDate = LocalDateTime.of(3000, 1, 1, 0, 0);
 
@@ -92,6 +92,5 @@ public class ArticleService {
 
         return articleRepository.findArticlesByOptionalFilters(type, start, end, pageable);
     }
-
-
 }
+

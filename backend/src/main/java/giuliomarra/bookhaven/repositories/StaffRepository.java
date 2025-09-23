@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/**
- * Repository per gestire il personale (Staff).
- */
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 

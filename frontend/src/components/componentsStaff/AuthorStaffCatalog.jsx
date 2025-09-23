@@ -131,10 +131,8 @@ const AuthorStaffCatalog = () => {
         ))
       )}
 
-      {/* 🔹 Paginazione compatta */}
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-4 flex-wrap">
-          {/* Prima e Precedente */}
           <button
             onClick={() => setPage(0)}
             disabled={page === 0}
@@ -150,7 +148,6 @@ const AuthorStaffCatalog = () => {
             ‹
           </button>
 
-          {/* Numeri attorno alla pagina corrente */}
           {Array.from({ length: totalPages }, (_, i) => i)
             .filter(
               (i) =>
@@ -178,7 +175,6 @@ const AuthorStaffCatalog = () => {
               );
             })}
 
-          {/* Successiva e Ultima */}
           <button
             onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
             disabled={page === totalPages - 1}

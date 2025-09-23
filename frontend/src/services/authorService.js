@@ -11,7 +11,10 @@ export const getAllAuthorsName = async (token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch authors");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero degli autori"
+      );
     }
 
     return await response.json();
@@ -25,13 +28,14 @@ export const getAuthorById = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/authors/public/${id}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch author");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero dell'autore"
+      );
     }
 
     return await response.json();
@@ -53,7 +57,10 @@ export const addNewAuthor = async (authorData, token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to add author");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante la creazione dell'autore"
+      );
     }
 
     return await response.json();
@@ -67,13 +74,14 @@ export const getAuthors = async (searchAuthor, page, size) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/authors/public/search?name=${searchAuthor}&page=${page}&size=${size}`,
-      {
-        method: "GET",
-      }
+      { method: "GET" }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch authors");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero degli autori"
+      );
     }
 
     return await response.json();
@@ -94,7 +102,10 @@ export const deleteAuthor = async (id, token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete author");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante la cancellazione dell'autore"
+      );
     }
 
     return await response.json();
@@ -116,7 +127,10 @@ export const updateAuthor = async (id, authorData, token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update author");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante l'aggiornamento dell'autore"
+      );
     }
 
     return await response.json();

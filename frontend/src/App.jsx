@@ -39,6 +39,7 @@ function App() {
     return (
       <Spinner
         text="Attendi mentre carichiamo i dati...
+        Il server è Hostato su Render modalità gratuita va in sleep-mode dopo 15 minuti di inattività.
   Se è il primo avvio potrebbe richiedere qualche minuto."
       />
     );

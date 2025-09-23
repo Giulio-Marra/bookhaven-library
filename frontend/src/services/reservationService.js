@@ -12,12 +12,12 @@ export const reservationBook = async (id, token) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData?.message || "Failed to book reservation");
+      throw new Error(errorData.message || "Errore durante la prenotazione");
     }
 
     return await response.json();
   } catch (error) {
-    console.error(error);
+    console.error("Error reserving book:", error);
     throw error;
   }
 };
@@ -32,10 +32,14 @@ export const getMyReservations = async (token, page = 0, size = 10) => {
         },
       }
     );
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData?.message || "Failed to fetch reservations");
+      throw new Error(
+        errorData.message || "Errore durante il recupero delle prenotazioni"
+      );
     }
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching reservations:", error);
@@ -51,7 +55,7 @@ export const getFilteredReservations = async (
     const params = new URLSearchParams();
     if (cardNumber.trim() !== "") params.append("cardNumber", cardNumber);
     if (status !== "") params.append("status", status);
-    if (expired) params.append("expired", "true"); // solo se true
+    if (expired) params.append("expired", "true");
     params.append("page", page);
     params.append("size", size);
 
@@ -65,7 +69,7 @@ export const getFilteredReservations = async (
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
-        errorData?.message || "Failed to fetch filtered reservations"
+        errorData.message || "Errore durante il filtraggio delle prenotazioni"
       );
     }
 
@@ -83,10 +87,14 @@ export const getReservationById = async (id, token) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData?.message || "Failed to fetch reservation");
+      throw new Error(
+        errorData.message || "Errore durante il recupero della prenotazione"
+      );
     }
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching reservation:", error);
@@ -109,7 +117,8 @@ export const updateReservationStatus = async (id, status, token) => {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
-        errorData?.message || "Failed to update reservation status"
+        errorData.message ||
+          "Errore durante l'aggiornamento dello stato della prenotazione"
       );
     }
 

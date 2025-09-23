@@ -14,13 +14,17 @@ import java.net.http.HttpResponse;
 public class SupabaseStorageService {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
+
     @Value("${SUPABASE_URL}")
     private String supabaseUrl;
+
     @Value("${SUPABASE_KEY_SERVICE_ROLE}")
     private String supabaseKey;
+
     @Value("${SUPABASE_BUCKET_NAME}")
     private String bucketName;
 
+    // carica un file su supabase storage e restituisce l'url pubblico
     public String uploadFile(MultipartFile file) throws IOException, InterruptedException {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         String uploadUrl = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
@@ -33,11 +37,11 @@ public class SupabaseStorageService {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + fileName;
         } else {
-            throw new RuntimeException("Failed to upload file: " + response.body());
+            throw new RuntimeException("failed to upload file: " + response.body());
         }
     }
 }
-

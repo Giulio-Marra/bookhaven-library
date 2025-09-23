@@ -16,7 +16,12 @@ export const getBooks = async (searchItem, category, page, size) => {
       }
     );
 
-    if (!response.ok) throw new Error("Failed to fetch books");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero dei libri"
+      );
+    }
 
     return await response.json();
   } catch (error) {
@@ -33,11 +38,15 @@ export const getBookById = async (id) => {
         "Content-Type": "application/json",
       },
     });
+
     if (!response.ok) {
-      throw new Error("Failed to fetch book");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero del libro"
+      );
     }
-    const data = await response.json();
-    return data;
+
+    return await response.json();
   } catch (error) {
     console.error(error);
     throw error;
@@ -90,7 +99,10 @@ export const addNewBook = async (bookData, token, imageFile) => {
     });
 
     if (!response.ok) {
-      throw new Error("Errore durante la creazione del libro");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante la creazione del libro"
+      );
     }
 
     return await response.json();
@@ -172,11 +184,15 @@ export const getBookByAuthorId = async (id) => {
         },
       }
     );
+
     if (!response.ok) {
-      throw new Error("Failed to fetch book");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero dei libri per autore"
+      );
     }
-    const data = await response.json();
-    return data;
+
+    return await response.json();
   } catch (error) {
     console.error(error);
     throw error;
@@ -191,11 +207,15 @@ export const getRecentBooks = async () => {
         "Content-Type": "application/json",
       },
     });
+
     if (!response.ok) {
-      throw new Error("Failed to fetch book");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero dei libri recenti"
+      );
     }
-    const data = await response.json();
-    return data;
+
+    return await response.json();
   } catch (error) {
     console.error(error);
     throw error;
@@ -212,9 +232,14 @@ export const deleteBooks = async (id, token) => {
       },
       body: JSON.stringify({ id }),
     });
+
     if (!response.ok) {
-      throw new Error("Failed to delete books");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante l'eliminazione del libro"
+      );
     }
+
     return await response.json();
   } catch (error) {
     console.error(error);

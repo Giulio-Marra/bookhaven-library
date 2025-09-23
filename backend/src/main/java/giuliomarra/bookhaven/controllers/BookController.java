@@ -28,6 +28,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // Aggiunge un nuovo libro (solo staff)
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
     public ResponseEntity<Book> addBook(
@@ -38,12 +39,13 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
-
+    // Recupera libro per ID
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBook(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.findById(id));
     }
 
+    // Aggiorna libro esistente (solo staff)
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping(value = "/update/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Book> updateBook(
@@ -55,13 +57,14 @@ public class BookController {
         return ResponseEntity.ok(updatedBook);
     }
 
-
+    // Rimuove un libro (solo staff)
     @PreAuthorize("hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<RemoveEntityResponseDto> deleteBook(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.removeBook(id));
     }
 
+    // Cerca libri per titolo, autore o categoria
     @GetMapping("/public/search")
     public ResponseEntity<Page<BookDetailDto>> searchBooks(
             @RequestParam(required = false) String q,
@@ -73,13 +76,14 @@ public class BookController {
         return ResponseEntity.ok(bookService.searchBooks(q, category, pageable));
     }
 
-
+    // Aggiorna lo status di un libro (solo staff)
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/{id}/status")
     public ResponseEntity<Book> updateBookStatus(@PathVariable Long id, @RequestParam BookStatus status) {
         return ResponseEntity.ok(bookService.updateBookStatus(id, status));
     }
 
+    // Recupera libri paginati
     @GetMapping("/public/all")
     public Page<Book> getBooks(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "10") int size) {
@@ -87,22 +91,24 @@ public class BookController {
         return bookService.findBooks(pageable);
     }
 
+    // Recupera dettagli libro per ID
     @GetMapping("/public/{id}")
     public ResponseEntity<BookDetailDto> getBookDetail(@PathVariable Long id) {
         BookDetailDto bookDetail = bookService.getBookDetail(id);
         return ResponseEntity.ok(bookDetail);
     }
 
+    // Recupera tutti i libri di un autore
     @GetMapping("/public/author/{authorId}")
     public ResponseEntity<List<Book>> getAllBooksAuthor(@PathVariable Long authorId) {
         List<Book> books = bookService.findBooksByAuthorId(authorId);
         return ResponseEntity.ok(books);
     }
 
+    // Recupera i libri più recenti
     @GetMapping("/public/recent")
     public ResponseEntity<List<BookDetailDto>> getRecentBooks() {
         List<BookDetailDto> recentBook = bookService.getRecentBooks();
         return ResponseEntity.ok(recentBook);
     }
 }
-

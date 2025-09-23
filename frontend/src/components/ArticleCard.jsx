@@ -7,7 +7,6 @@ const ArticleCard = ({ article }) => {
 
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-md  overflow-hidden hover:shadow-lg transition-shadow m-5">
-      {/* Contenuto testuale */}
       <div className="flex-1 p-4 flex flex-col justify-between">
         <div>
           <div className="flex gap-4 text-sm text-gray-500 mb-2">
@@ -35,7 +34,6 @@ const ArticleCard = ({ article }) => {
         </button>
       </div>
 
-      {/* Immagine a destra */}
       <div className="w-full md:w-60 h-40 md:h-auto flex-shrink-0">
         <img
           src={article.image}

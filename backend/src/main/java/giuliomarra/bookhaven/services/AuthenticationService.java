@@ -25,8 +25,9 @@ public class AuthenticationService {
     @Autowired
     private PasswordEncoder bcrypt;
 
+    // Restituisce l'entità (Staff o User) dato ID e ruolo; lancia eccezione se ruolo non supportato
     public AuthenticatedEntity findEntityByIdAndRole(Long id, Role role) {
-        if (role == Role.STAFF) {
+        if (role == Role.STAFF || role == Role.DEMO) {
             return staffService.findStaffById(id);
         } else if (role == Role.USER) {
             return userService.findUserById(id);
@@ -35,6 +36,7 @@ public class AuthenticationService {
         }
     }
 
+    // Cerca un'entità tramite codice; prima Staff, se non trovato prova User
     public AuthenticatedEntity findEntityByCode(String code) {
         try {
             return staffService.findStaffByIdentityCode(code);
@@ -43,7 +45,7 @@ public class AuthenticationService {
         }
     }
 
-
+    // Genera un token JWT se le credenziali sono corrette; altrimenti lancia AuthenticationException
     public String generateToken(LoginRequiredDto lr) {
         AuthenticatedEntity entity = findEntityByCode(lr.code());
 
@@ -53,5 +55,4 @@ public class AuthenticationService {
             throw new AuthenticationException("Wrong credentials");
         }
     }
-
 }

@@ -13,7 +13,10 @@ export const addNewArticle = async (articleData, token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Errore durante la creazione dell'articolo");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante la creazione dell'articolo"
+      );
     }
 
     return await response.json();
@@ -28,13 +31,14 @@ export const getArticleById = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/articles/public/${id}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch article");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero dell'articolo"
+      );
     }
 
     return await response.json();
@@ -82,10 +86,13 @@ export const deleteArticle = async (id, token) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to delete article");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante la cancellazione dell'articolo"
+      );
     }
 
-    return response.status === 204; // NoContent response
+    return response.status === 204;
   } catch (error) {
     console.error(error);
     throw error;
@@ -95,22 +102,18 @@ export const deleteArticle = async (id, token) => {
 // LISTA TUTTI GLI ARTICOLI ORDINATI PER UPDATED AT CRESCENTE
 export const getArticlesAsc = async (page = 0, size = 10) => {
   try {
-    const params = new URLSearchParams();
-    params.append("page", page);
-    params.append("size", size);
+    const params = new URLSearchParams({ page, size });
 
     const response = await fetch(
       `${API_BASE_URL}/api/articles/public/asc?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { method: "GET", headers: { "Content-Type": "application/json" } }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch articles");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero degli articoli (asc)"
+      );
     }
 
     return await response.json();
@@ -123,22 +126,18 @@ export const getArticlesAsc = async (page = 0, size = 10) => {
 // LISTA TUTTI GLI ARTICOLI ORDINATI PER UPDATED AT DECRESCENTE
 export const getArticlesDesc = async (page = 0, size = 20) => {
   try {
-    const params = new URLSearchParams();
-    params.append("page", page);
-    params.append("size", size);
+    const params = new URLSearchParams({ page, size });
 
     const response = await fetch(
       `${API_BASE_URL}/api/articles/public/desc?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { method: "GET", headers: { "Content-Type": "application/json" } }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch articles");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero degli articoli (desc)"
+      );
     }
 
     return await response.json();
@@ -153,13 +152,14 @@ export const getLatestArticles = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/articles/public/latest`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch latest articles");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero degli ultimi articoli"
+      );
     }
 
     return await response.json();
@@ -177,24 +177,24 @@ export const getArticlesByDateRange = async (
   size = 10
 ) => {
   try {
-    const params = new URLSearchParams();
-    params.append("start", startDate);
-    params.append("end", endDate);
-    params.append("page", page);
-    params.append("size", size);
+    const params = new URLSearchParams({
+      start: startDate,
+      end: endDate,
+      page,
+      size,
+    });
 
     const response = await fetch(
       `${API_BASE_URL}/api/articles/public/updated-between?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { method: "GET", headers: { "Content-Type": "application/json" } }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch articles by date range");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message ||
+          "Errore durante il recupero articoli per intervallo date"
+      );
     }
 
     return await response.json();
@@ -214,26 +214,22 @@ export const getArticlesByFilters = async (
 ) => {
   try {
     const params = new URLSearchParams();
-
     if (type) params.append("type", type);
     if (startDate) params.append("start", new Date(startDate).toISOString());
     if (endDate) params.append("end", new Date(endDate).toISOString());
-
     params.append("page", page);
     params.append("size", size);
 
     const response = await fetch(
       `${API_BASE_URL}/api/articles/public/filter?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { method: "GET", headers: { "Content-Type": "application/json" } }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch articles by filters");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Errore durante il recupero articoli filtrati"
+      );
     }
 
     return await response.json();

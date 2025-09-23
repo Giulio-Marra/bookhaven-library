@@ -34,24 +34,29 @@ public class BookService {
         this.supabaseStorageService = supabaseStorageService;
     }
 
+    // Restituisce un libro tramite ID o lancia eccezione se non trovato
     public Book findById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book with this id " + id + " not found"));
     }
 
+    // Restituisce tutti i libri
     public List<Book> findAllBooks() {
         return bookRepository.findAll();
     }
 
+    // Restituisce un libro tramite ISBN o lancia eccezione se non trovato
     public Book findByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new EntityNotFoundException("Book with ISBN " + isbn + " not found"));
     }
 
+    // Restituisce libri filtrati per categoria (case insensitive)
     public List<Book> findByCategory(String category) {
         return bookRepository.findByCategoriesContainingIgnoreCase(category);
     }
 
+    // Crea un nuovo libro e associa gli autori, opzionalmente con immagine
     public Book addNewBook(NewBookRequiredDto body, MultipartFile imageFile) throws IOException, InterruptedException {
         String imageUrl = null;
         if (imageFile != null) {
@@ -72,6 +77,7 @@ public class BookService {
 
         book = bookRepository.save(book);
 
+        // Associa gli autori al libro
         for (Long authorId : body.authorIds()) {
             Author author = authorService.findAuthorById(authorId);
             BookAuthor bookAuthor = new BookAuthor(book, author);
@@ -81,6 +87,7 @@ public class BookService {
         return book;
     }
 
+    // Aggiorna un libro esistente, aggiorna immagine e associazioni con autori
     @Transactional
     public Book updateBook(Long id, NewBookRequiredDto body, MultipartFile imageFile) throws IOException, InterruptedException {
         Book book = findById(id);
@@ -94,7 +101,6 @@ public class BookService {
         book.setNumPages(body.numPages());
         book.setStatus(BookStatus.AVAILABLE);
 
-
         if (imageFile != null) {
             String imageUrl = supabaseStorageService.uploadFile(imageFile);
             book.setImage(imageUrl);
@@ -104,8 +110,8 @@ public class BookService {
 
         book = bookRepository.save(book);
 
+        // Rimuove associazioni precedenti e le ricrea
         bookAuthorsRepository.deleteByBook(book);
-
         for (Long authorId : body.authorIds()) {
             Author author = authorService.findAuthorById(authorId);
             BookAuthor bookAuthor = new BookAuthor(book, author);
@@ -115,6 +121,7 @@ public class BookService {
         return book;
     }
 
+    // Rimuove un libro e tutte le associazioni con gli autori
     @Transactional
     public RemoveEntityResponseDto removeBook(Long id) {
         Book book = findById(id);
@@ -129,12 +136,13 @@ public class BookService {
         );
     }
 
+    // Restituisce libri di un autore tramite authorId
     public List<Book> findBooksByAuthorId(Long authorId) {
         return bookRepository.findBooksByAuthorId(authorId);
     }
 
+    // Ricerca libri per titolo, autore o categoria con paginazione
     public Page<BookDetailDto> searchBooks(String searchTerm, String category, Pageable pageable) {
-
         Page<Book> books = bookRepository.searchBooksByTitleAuthorOrCategory(searchTerm, category, pageable);
 
         return books.map(book -> {
@@ -155,17 +163,19 @@ public class BookService {
         });
     }
 
-
+    // Aggiorna solo lo stato del libro
     public Book updateBookStatus(Long id, BookStatus status) {
         Book book = findById(id);
         book.setStatus(status);
         return bookRepository.save(book);
     }
 
+    // Restituisce libri paginati
     public Page<Book> findBooks(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
+    // Restituisce il dettaglio completo di un libro con autori
     public BookDetailDto getBookDetail(Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
@@ -187,6 +197,7 @@ public class BookService {
         );
     }
 
+    // Restituisce gli ultimi 6 libri aggiunti con dettagli degli autori
     public List<BookDetailDto> getRecentBooks() {
         List<Book> recentBooks = bookRepository.findTop6ByOrderByAddingDateDesc();
 
@@ -208,5 +219,5 @@ public class BookService {
         }).toList();
     }
 
-
 }
+

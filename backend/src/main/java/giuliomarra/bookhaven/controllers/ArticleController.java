@@ -29,7 +29,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    // CREA NUOVO ARTICOLO
+    // CCrea nuovo articolo
     @PreAuthorize("hasAuthority('STAFF')")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,14 +39,14 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
 
-    // TROVA ARTICOLO PER ID
+    // Ttrova articolo per id
     @GetMapping("/public/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable Long id) {
         Article article = articleService.findById(id);
         return ResponseEntity.ok(article);
     }
 
-    // AGGIORNA ARTICOLO
+    // Aggiorna articolo
     @PreAuthorize("hasAuthority('STAFF')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Article> updateArticle(@PathVariable Long id,
@@ -55,7 +55,7 @@ public class ArticleController {
         return ResponseEntity.ok(updated);
     }
 
-    // CANCELLA ARTICOLO
+    // Cancella articolo
     @PreAuthorize("hasAuthority('STAFF')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {

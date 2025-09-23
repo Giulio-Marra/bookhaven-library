@@ -34,49 +34,43 @@ public class UserService {
         this.emailService = emailService;
     }
 
-    // ---------------------------
-    // PASSWORD UTILS
-    // ---------------------------
+    // Genera password casuale
     public String generateRandomPassword(int length) {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{};:,.<>?";
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder(length);
-
         for (int i = 0; i < length; i++) {
             password.append(chars.charAt(random.nextInt(chars.length())));
         }
-
         return password.toString();
     }
 
-    // ---------------------------
-    // READ
-    // ---------------------------
+    // Trova utente per ID
     public User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
+    // Trova utente per card
     public User findUserByCardCode(String cardCode) {
         return userRepository.findByCard_CardNumber(cardCode)
                 .orElseThrow(() -> new EntityNotFoundException("User with card code " + cardCode + " not found"));
     }
 
+    // Trova utente per email
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User with email " + email + " not found"));
     }
 
+    // Recupera tutti gli utenti
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    // ---------------------------
-    // CREATE
-    // ---------------------------
+    // Crea nuovo account utente e invia email
     public RegisterUserInfoDto createNewUserAccount(NewUserAccountRequiredDto body, Staff registeredBy) {
         validateUserUniqueness(body.email(), body.taxCode());
-
         Card card = cardService.addNewCard(body.card());
         String rawPassword = generateRandomPassword(12);
 
@@ -94,8 +88,8 @@ public class UserService {
         );
 
         userRepository.save(user);
-
         emailService.sendRegistrationEmail(user.getEmail(), card.getCardNumber(), rawPassword);
+
         return new RegisterUserInfoDto(
                 card.getCardNumber(),
                 rawPassword,
@@ -104,20 +98,19 @@ public class UserService {
         );
     }
 
+    // Controlla unicita di email e codice fiscale
     private void validateUserUniqueness(String email, String taxCode) {
         if (userRepository.existsByTaxCode(taxCode)) {
             throw new AlreadyexistsException("User with taxCode " + taxCode + " already exists");
         }
-
     }
 
+    // Cerca utenti per email, codice fiscale o card
     public Page<User> searchUsers(String search, int page, int size) {
         return userRepository.searchByEmailOrTaxCodeOrCardNumber(search, PageRequest.of(page, size));
     }
 
-    // ---------------------------
-    // UPDATE
-    // ---------------------------
+    // Aggiorna informazioni utente
     public User updateUserInfo(User user, UpdateUserInfoDto dto) {
         if (!user.getEmail().equals(dto.email()) && userRepository.findByEmail(dto.email()).isPresent()) {
             throw new AlreadyexistsException("Email " + dto.email() + " is already used by another user");
@@ -128,14 +121,17 @@ public class UserService {
         user.setEmail(dto.email());
         user.setPhoneNumber(dto.phoneNumber());
         user.setAddress(dto.address());
+
         return userRepository.save(user);
     }
 
+    // Aggiorna password utente
     public void updateUserPassword(User user, String rawPassword) {
         user.setPassword(bcrypt.encode(rawPassword));
         userRepository.save(user);
     }
 
+    // Resetta password e restituisce la nuova
     public String resetUserPassword(Long id) {
         User user = findUserById(id);
         String newRawPassword = generateRandomPassword(8);
@@ -144,9 +140,7 @@ public class UserService {
         return newRawPassword;
     }
 
-    // ---------------------------
-    // CARD MANAGEMENT
-    // ---------------------------
+    // Assegna nuova card a utente
     public User assignNewCardToUser(Long id, NewCardRequiredDto dto) {
         User user = findUserById(id);
         Card newCard = cardService.addNewCard(dto);
@@ -154,6 +148,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // Rinnova card utente
     public User renewUserCard(Long userId) {
         User user = findUserById(userId);
         Card updatedCard = cardService.updateCardExpiration(user.getCard().getId());
@@ -161,9 +156,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ---------------------------
-    // DELETE
-    // ---------------------------
+    // Elimina utente
     public void deleteUser(Long id) {
         User user = findUserById(id);
         userRepository.delete(user);
