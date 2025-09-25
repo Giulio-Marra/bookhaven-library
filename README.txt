@@ -140,6 +140,7 @@ bookhaven-library/
 - Le email (credenziali, notifiche) sono inviate tramite SendGrid.
 - Tutti i dati e i file sono gestiti in cloud su Supabase.
 - Il frontend è sempre attivo su Vercel.
+- Le immagini degli autori sono gestite in automatico tramite l'api di Open Library
 
 ---
 
